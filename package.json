@@ -1,0 +1,29 @@
+{
+  "name": "url-parse",
+  "version": "0.0.0",
+  "description": "Parse URL in node using the URL module and in the browser using the DOM",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec --ui bdd test.js",
+    "coverage": "istanbul cover ./node_modules/.bin/_mocha -- --reporter spec --ui bdd test.js"
+  },
+  "keywords": [
+    "URL",
+    "parser",
+    "uri",
+    "url",
+    "parse",
+    "query",
+    "string",
+    "querystring",
+    "stringify"
+  ],
+  "author": "Arnout Kazemier",
+  "license": "MIT",
+  "devDependencies": {
+    "assume": "0.0.x",
+    "istanbul": "0.3.x",
+    "mocha": "1.21.x",
+    "pre-commit": "0.0.x"
+  }
+}
