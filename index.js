@@ -69,6 +69,10 @@ var parse = 'undefined' !== typeof document ? function parse(url, qs) {
     data.auth = data.href.slice(start, data.href.indexOf(data.pathname, start)).split('@')[0];
   }
 
+  if (qs && 'string' === typeof data.query) {
+    data.query = querystring(data.query);
+  }
+
   return data;
 } : require('url').parse;
 
@@ -79,7 +83,7 @@ var parse = 'undefined' !== typeof document ? function parse(url, qs) {
  * @returns {Object}
  * @api public
  */
-parse.querystring = function querystring(query) {
+function querystring(query) {
   var parser = /([^=?&]+)=([^&]*)/g
     , result = {}
     , part;
@@ -95,7 +99,7 @@ parse.querystring = function querystring(query) {
   );
 
   return result;
-};
+}
 
 /**
  * Transform a query string to an object.
@@ -104,7 +108,7 @@ parse.querystring = function querystring(query) {
  * @returns {String}
  * @api public
  */
-parse.querystringify = function querystringify(obj, prefix) {
+function querystringify(obj, prefix) {
   prefix = prefix || '';
 
   var pairs = [];
@@ -121,9 +125,11 @@ parse.querystringify = function querystringify(obj, prefix) {
   }
 
   return prefix + pairs.join('&');
-};
+}
 
 //
 // Expose the module.
 //
+parse.querystringify = querystringify;
+parse.querystring = querystring;
 module.exports = parse;
