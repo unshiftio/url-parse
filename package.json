@@ -1,6 +1,6 @@
 {
   "name": "url-parse",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Parse URL in node using the URL module and in the browser using the DOM",
   "main": "index.js",
   "scripts": {
