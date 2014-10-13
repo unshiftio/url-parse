@@ -1,6 +1,8 @@
 # url-parse
 
 [![Build Status](https://travis-ci.org/unshiftio/url-parse.svg?branch=master)](https://travis-ci.org/unshiftio/url-parse)
+[![NPM version](https://badge.fury.io/js/url-parse.svg)](http://badge.fury.io/js/url-parse)
+[![Coverage Status](https://img.shields.io/coveralls/unshiftio/url-parse.svg)](https://coveralls.io/r/unshiftio/url-parse?branch=master)
 
 When required on node it will expose the `url` module's `.parse` method. When
 required in the browser it will offload the URL parsing to the `<a>` element in
