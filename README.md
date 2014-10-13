@@ -1,5 +1,7 @@
 # url-parse
 
+[![Build Status](https://travis-ci.org/unshiftio/url-parse.svg?branch=master)](https://travis-ci.org/unshiftio/url-parse)
+
 When required on node it will expose the `url` module's `.parse` method. When
 required in the browser it will offload the URL parsing to the `<a>` element in
 the DOM. This allows the module to be really tiny on the browser and still be
