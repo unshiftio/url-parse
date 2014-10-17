@@ -17,7 +17,10 @@ var parse = 'undefined' !== typeof document ? function parse(url, qs) {
     , a;
 
   //
-  // Uses an innerHTML property to obtain an absolute URL
+  // Uses an innerHTML property to obtain an absolute URL for older browser
+  // support like IE6.
+  //
+  // @see http://grack.com/blog/2009/11/17/absolutizing-url-in-javascript/
   //
   div.innerHTML = '<a href="' + url + '"/>';
   a = div.firstChild;
