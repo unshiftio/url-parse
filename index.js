@@ -11,11 +11,16 @@
  * @api public
  */
 var parse = 'undefined' !== typeof document ? function parse(url, qs) {
-  var a = document.createElement('a')
+  var div = document.createElement('div')
     , data = {}
-    , key;
+    , key
+    , a;
 
-  a.href = url;
+  //
+  // Uses an innerHTML property to obtain an absolute URL
+  //
+  div.innerHTML = '<a href="' + url + '"/>';
+  a = div.firstChild;
 
   //
   // Transform it from a readOnly object to a read/writable object so we can
@@ -27,6 +32,14 @@ var parse = 'undefined' !== typeof document ? function parse(url, qs) {
       data[key] = a[key];
     }
   }
+
+  //
+  // encodeURI and decodeURI are needed to normalize URL between IE and non-IE,
+  // since IE doesn't encode the href property value and return it
+  //
+  // @see http://jsfiddle.net/Yq9M8/1/
+  //
+  data.href = encodeURI(decodeURI(data.href));
 
   //
   // If we don't obtain a port number (e.g. when using zombie) then try
@@ -47,9 +60,13 @@ var parse = 'undefined' !== typeof document ? function parse(url, qs) {
 
   //
   // IE quirk: The `protocol` is parsed as ":" when a protocol agnostic URL
-  // is used. In this case we extract the value from the `href` value.
+  // is used. In this case we extract the value from the `href` value. In
+  // addition to that, it's possible in IE11 that the protocol is an string for
+  // relative URL's.
   //
-  if (':' === data.protocol) {
+  // @see https://github.com/primus/primus/issues/242
+  //
+  if (!data.protocol || ':' === data.protocol) {
     data.protocol = data.href.substr(0, data.href.indexOf(':') + 1);
   }
 
