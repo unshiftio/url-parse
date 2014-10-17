@@ -90,9 +90,10 @@ var parse = 'undefined' !== typeof document ? function parse(url, qs) {
   }
 
   if (qs && 'string' === typeof data.query) {
-    data.query = querystring(data.query);
+    data.query = querystring(data.query || data.search);
   }
 
+  data.query = data.query || data.search;
   return data;
 } : require('url').parse;
 
