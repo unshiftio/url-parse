@@ -44,7 +44,7 @@
     ]
   },
   "browser": {
-    "url": "./index.js"
+    "url": false
   },
   "repository": {
     "type": "git",
