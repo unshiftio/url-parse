@@ -1,5 +1,7 @@
 'use strict';
 
+var qs = require('querystringify');
+
 /**
  * A DOM and Node.js compatible URL parser which leverages the DOM to do the
  * actual parsing of our URLs.
@@ -89,68 +91,17 @@ var parse = 'undefined' !== typeof document ? function parse(url, qs) {
     data.auth = data.href.slice(start, data.href.indexOf(data.pathname, start)).split('@')[0];
   }
 
-  if (qs && 'string' === typeof data.query) {
-    data.query = querystring(data.query || data.search);
+  if (qs) {
+    data.query = qs.parse(data.query || data.search || '');
   }
 
   data.query = data.query || data.search;
   return data;
 } : require('url').parse;
 
-/**
- * Simple query string parser.
- *
- * @param {String} query The query string that needs to be parsed.
- * @returns {Object}
- * @api public
- */
-function querystring(query) {
-  var parser = /([^=?&]+)=([^&]*)/g
-    , result = {}
-    , part;
-
-  //
-  // Little nifty parsing hack, leverage the fact that RegExp.exec increments
-  // the lastIndex property so we can continue executing this loop until we've
-  // parsed all results.
-  //
-  for (;
-    part = parser.exec(query);
-    result[decodeURIComponent(part[1])] = decodeURIComponent(part[2])
-  );
-
-  return result;
-}
-
-/**
- * Transform a query string to an object.
- *
- * @param {Object} obj Object that should be transformed.
- * @returns {String}
- * @api public
- */
-function querystringify(obj, prefix) {
-  prefix = prefix || '';
-
-  var pairs = [];
-
-  //
-  // Optionally prefix with a '?' if needed
-  //
-  if ('string' !== typeof prefix) prefix = '?';
-
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      pairs.push(encodeURIComponent(key) +'='+ encodeURIComponent(obj[key]));
-    }
-  }
-
-  return prefix + pairs.join('&');
-}
-
 //
 // Expose the module.
 //
-parse.querystringify = querystringify;
-parse.querystring = querystring;
+parse.querystringify = qs.stringify;
+parse.querystring = qs.parse;
 module.exports = parse;

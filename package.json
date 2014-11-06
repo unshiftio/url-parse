@@ -49,5 +49,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/unshiftio/url-parse"
+  },
+  "dependencies": {
+    "querystringify": "0.0.x"
   }
 }

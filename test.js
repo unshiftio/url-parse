@@ -2,63 +2,49 @@ describe('url-parse', function () {
   'use strict';
 
   var assume = require('assume')
-    , parse = require('./')
-    , qs = parse.querystring
-    , qsify = parse.querystringify;
+    , parse = require('./');
 
   it('exposes parse as a function', function () {
     assume(parse).is.a('function');
   });
 
-  describe('#querystringify', function () {
-    var obj = {
-      foo: 'bar',
-      bar: 'foo'
-    };
+  it('parses an url', function () {
+    var res = parse('https://user:pass@sub.subdomain.example.com:808/path/?query=string&more=ok#hash');
 
-    it('is exposed as method', function () {
-      assume(qsify).is.a('function');
-    });
-
-    it('transforms an object', function () {
-      assume(qsify(obj)).equals('foo=bar&bar=foo');
-    });
-
-    it('can optionally prefix', function () {
-      assume(qsify(obj, true)).equals('?foo=bar&bar=foo');
-    });
-
-    it('can prefix with custom things', function () {
-      assume(qsify(obj, '&')).equals('&foo=bar&bar=foo');
-    });
+    assume(res).is.a('object');
+    assume(res.auth).equals('user:pass');
+    assume(res.hash).equals('#hash');
+    assume(res.host).equals('sub.subdomain.example.com:808');
+    assume(res.hostname).equals('sub.subdomain.example.com');
+    assume(res.path).equals('/path/?query=string&more=ok');
+    assume(res.pathname).equals('/path/');
+    assume(res.protocol).equals('https:');
+    assume(res.query).equals('query=string&more=ok');
+    assume(res.search).equals('?query=string&more=ok');
   });
 
-  describe('querystring', function () {
-    it('is exposed as method', function () {
-      assume(qs).is.a('function');
-    });
+  it('parses the query string when the qs boolean is supplied', function () {
+    var res = parse('http://example.com/?foo=bar', true);
 
-    it('will parse a querystring to an object', function () {
-      var obj = qs('foo=bar');
+    assume(res.query).is.a('object');
+    assume(res.query.foo).equals('bar');
+  });
 
-      assume(obj).is.a('object');
-      assume(obj.foo).equals('bar');
-    });
+  it('correctly extracts the protocol', function () {
+    var res = parse('http://example.com');
+    assume(res.protocol).equals('http:');
 
-    it('will parse the `query` property of the parse', function () {
-      var url = parse('https://google.com?foo=bar')
-        , obj = qs(url.query);
+    res = parse('https://example.com');
+    assume(res.protocol).equals('https:');
 
-      assume(obj).is.a('object');
-      assume(obj.foo).equals('bar');
-    });
+    res = parse('file://example.com');
+    assume(res.protocol).equals('file:');
+  });
 
-    it('will also work if querystring is prefixed with ?', function () {
-      var obj = qs('?foo=bar&shizzle=mynizzle');
+  it('has the same href as the one we supplied', function () {
+    var href = 'https://subdomain.example.org/path/?query=string#hash'
+      , res = parse(href);
 
-      assume(obj).is.a('object');
-      assume(obj.foo).equals('bar');
-      assume(obj.shizzle).equals('mynizzle');
-    });
+    assume(res.href).equals(href);
   });
 });
