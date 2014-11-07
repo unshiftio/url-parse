@@ -1,6 +1,6 @@
 'use strict';
 
-var URL = require('./');
+var URL;
 
 /**
  * The location object differs when your code is loaded through a normal page,
@@ -16,6 +16,7 @@ var URL = require('./');
  */
 module.exports = function lolcation(location) {
   location = location || (new Function('return this.location'))() || {};
+  URL = URL || require('./');
 
   var finaldestination = {}
     , key;

@@ -39,6 +39,14 @@ describe('url-parse', function () {
     assume(data.href).equals('http://google.com/foo?foo=bar');
   });
 
+  it('is blob: location aware', function () {
+    var blob = {"hash":"","search":"","pathname":"https%3A//gist.github.com/3f272586-6dac-4e29-92d0-f674f2dde618","port":"","hostname":"","host":"","protocol":"blob:","origin":"https://gist.github.com","href":"blob:https%3A//gist.github.com/3f272586-6dac-4e29-92d0-f674f2dde618"}
+      , url = '/unshiftio/url-parse'
+      , data = parse(url, blob);
+
+    assume(data.href).equals('https://gist.github.com/unshiftio/url-parse');
+  });
+
   it('converts protocol to lowercase', function () {
     var url = 'HTTP://example.com';
 
