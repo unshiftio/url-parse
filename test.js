@@ -23,6 +23,15 @@ describe('url-parse', function () {
     assume(data.query).equals('1337');
   });
 
+  it('allows a custom stringify function', function () {
+    var url = 'http://google.com/?foo=bar'
+      , data = parse(url, true)
+      , str;
+
+    str = data.toString(function () { return 'lolcakes'; });
+    assume(str).equals('http://google.com/?lolcakes');
+  });
+
   it('allows a custom location object', function () {
     var url = '/foo?foo=bar'
       , data = parse(url, parse('http://google.com'));
