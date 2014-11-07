@@ -36,7 +36,7 @@ function URL(address, location, parser) {
   //    arguments. The supplied object will be used as default values / fall-back
   //    for relative paths.
   //
-  if ('function' === typeof location) { parser = location; location = null; }
+  if ('object' !== typeof location) { parser = location; location = null; }
   if ('object' === typeof parser) { location = parser; parser = null; }
   if (parser && 'function' !== typeof parser) parser = qs.parse;
 
@@ -82,7 +82,7 @@ function URL(address, location, parser) {
  * @api public
  */
 URL.prototype.toString = function toString(stringify) {
-  if (stringify && 'function' !== typeof stringify) stringify = qs.stringify;
+  if (!stringify || 'function' !== typeof stringify) stringify = qs.stringify;
 
   var result = this.protocol +'//'
     , query;
@@ -95,7 +95,7 @@ URL.prototype.toString = function toString(stringify) {
   result += this.pathname;
 
   if (this.query) {
-    if (stringify) query = stringify(this.query);
+    if ('object' === typeof this.query) query = stringify(this.query);
     else query = this.query;
 
     result += (query.charAt(0) === '?' ? '' : '?') + query;

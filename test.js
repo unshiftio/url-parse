@@ -8,6 +8,28 @@ describe('url-parse', function () {
     assume(parse).is.a('function');
   });
 
+  it('parsers the query string', function () {
+    var url = 'http://google.com/?foo=bar'
+      , data = parse(url, true);
+
+    assume(data.query).is.a('object');
+    assume(data.query.foo).equals('bar');
+  });
+
+  it('allows a custom function as parser', function () {
+    var url = 'http://google.com/?foo=bar'
+      , data = parse(url, function () { return '1337'; });
+
+    assume(data.query).equals('1337');
+  });
+
+  it('allows a custom location object', function () {
+    var url = '/foo?foo=bar'
+      , data = parse(url, parse('http://google.com'));
+
+    assume(data.href).equals('http://google.com/foo?foo=bar');
+  });
+
   it('converts protocol to lowercase', function () {
     var url = 'HTTP://example.com';
 
