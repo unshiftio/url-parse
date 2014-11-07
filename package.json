@@ -51,6 +51,7 @@
     "url": "https://github.com/unshiftio/url-parse"
   },
   "dependencies": {
-    "querystringify": "0.0.x"
+    "querystringify": "0.0.x",
+    "requires-port": "0.0.x"
   }
 }
