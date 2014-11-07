@@ -30,7 +30,7 @@ combinations.hash = ['name', 'moo-with-longer-name', '/what/about/slashes?querys
  */
 function get(name) {
   var data = combinations[name];
-  if (!data) throw name;
+
   return data[Math.floor(Math.random() * data.length)];
 }
 
