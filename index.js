@@ -37,7 +37,6 @@ function URL(address, location, parser) {
   //    for relative paths.
   //
   if ('object' !== typeof location) { parser = location; location = null; }
-  if ('object' === typeof parser) { location = parser; parser = null; }
   if (parser && 'function' !== typeof parser) parser = qs.parse;
 
   location = lolcation(location);
