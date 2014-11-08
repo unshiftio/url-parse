@@ -1,8 +1,5 @@
 # url-parse
-
-[![Build Status](https://travis-ci.org/unshiftio/url-parse.svg?branch=master)](https://travis-ci.org/unshiftio/url-parse)
-[![NPM version](https://badge.fury.io/js/url-parse.svg)](http://badge.fury.io/js/url-parse)
-[![Coverage Status](https://img.shields.io/coveralls/unshiftio/url-parse.svg)](https://coveralls.io/r/unshiftio/url-parse?branch=master)
+[![Made by unshift.io](https://img.shields.io/badge/made%20by-unshift.io-00ffcc.svg?style=flat-square)](http://unshift.io)[![Version npm](http://img.shields.io/npm/v/url-parse.svg?style=flat-square)](http://browsenpm.org/package/url-parse)[![Build Status](http://img.shields.io/travis/unshiftio/url-parse/master.svg?style=flat-square)](https://travis-ci.org/unshiftio/url-parse)[![Dependencies](https://img.shields.io/david/unshiftio/url-parse.svg?style=flat-square)](https://david-dm.org/unshiftio/url-parse)[![Coverage Status](http://img.shields.io/coveralls/unshiftio/url-parse/master.svg?style=flat-square)](https://coveralls.io/r/unshiftio/url-parse?branch=master) 
 
 When required on node it will expose the `url` module's `.parse` method. When
 required in the browser it will offload the URL parsing to the `<a>` element in

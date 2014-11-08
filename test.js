@@ -8,43 +8,103 @@ describe('url-parse', function () {
     assume(parse).is.a('function');
   });
 
-  it('parses an url', function () {
-    var res = parse('https://user:pass@sub.subdomain.example.com:808/path/?query=string&more=ok#hash');
+  it('parsers the query string', function () {
+    var url = 'http://google.com/?foo=bar'
+      , data = parse(url, true);
 
-    assume(res).is.a('object');
-    assume(res.auth).equals('user:pass');
-    assume(res.hash).equals('#hash');
-    assume(res.host).equals('sub.subdomain.example.com:808');
-    assume(res.hostname).equals('sub.subdomain.example.com');
-    assume(res.path).equals('/path/?query=string&more=ok');
-    assume(res.pathname).equals('/path/');
-    assume(res.protocol).equals('https:');
-    assume(res.query).equals('query=string&more=ok');
-    assume(res.search).equals('?query=string&more=ok');
+    assume(data.query).is.a('object');
+    assume(data.query.foo).equals('bar');
   });
 
-  it('parses the query string when the qs boolean is supplied', function () {
-    var res = parse('http://example.com/?foo=bar', true);
+  it('allows a custom function as parser', function () {
+    var url = 'http://google.com/?foo=bar'
+      , data = parse(url, function () { return '1337'; });
 
-    assume(res.query).is.a('object');
-    assume(res.query.foo).equals('bar');
+    assume(data.query).equals('1337');
   });
 
-  it('correctly extracts the protocol', function () {
-    var res = parse('http://example.com');
-    assume(res.protocol).equals('http:');
+  it('allows a custom stringify function', function () {
+    var url = 'http://google.com/?foo=bar'
+      , data = parse(url, true)
+      , str;
 
-    res = parse('https://example.com');
-    assume(res.protocol).equals('https:');
-
-    res = parse('file://example.com');
-    assume(res.protocol).equals('file:');
+    str = data.toString(function () { return 'lolcakes'; });
+    assume(str).equals('http://google.com/?lolcakes');
   });
 
-  it('has the same href as the one we supplied', function () {
-    var href = 'https://subdomain.example.org/path/?query=string#hash'
-      , res = parse(href);
+  it('allows a custom location object', function () {
+    var url = '/foo?foo=bar'
+      , data = parse(url, parse('http://google.com'));
 
-    assume(res.href).equals(href);
+    assume(data.href).equals('http://google.com/foo?foo=bar');
+  });
+
+  it('is blob: location aware', function () {
+    var blob = {"hash":"","search":"","pathname":"https%3A//gist.github.com/3f272586-6dac-4e29-92d0-f674f2dde618","port":"","hostname":"","host":"","protocol":"blob:","origin":"https://gist.github.com","href":"blob:https%3A//gist.github.com/3f272586-6dac-4e29-92d0-f674f2dde618"}
+      , url = '/unshiftio/url-parse'
+      , data = parse(url, blob);
+
+    assume(data.href).equals('https://gist.github.com/unshiftio/url-parse');
+  });
+
+  it('converts protocol to lowercase', function () {
+    var url = 'HTTP://example.com';
+
+    assume(parse(url).protocol).equals('http:');
+  });
+
+  it('converts hostname to lowercase', function () {
+    var url = 'HTTP://fOo.eXaMPle.com';
+
+    assume(parse(url).hostname).equals('foo.example.com');
+  });
+
+  it('does not lowercase the USER:PASS', function () {
+    var url = 'HTTP://USER:PASS@EXAMPLE.COM';
+
+    assume(parse(url).username).equals('USER');
+    assume(parse(url).password).equals('PASS');
+  });
+
+  it('does not lowercase the path', function () {
+    var url = 'HTTP://X.COM/Y/Z';
+
+    assume(parse(url).pathname).equals('/Y/Z');
+  });
+
+  it('removes default port numbers', function () {
+    var url = 'http://example.com:80';
+
+    assume(parse(url).port).equals('');
+    assume(parse(url).href).equals('http://example.com');
+  });
+
+  it('accepts @ in pathnames', function () {
+    var url = 'http://mt0.google.com/vt/lyrs=m@114&hl=en&src=api&x=2&y=2&z=3&s=';
+
+    assume(parse(url).pathname).equals('/vt/lyrs=m@114&hl=en&src=api&x=2&y=2&z=3&s=');
+  });
+
+  it('accepts multiple ???', function () {
+    var url = 'http://mt0.google.com/vt/lyrs=m@114???&hl=en&src=api&x=2&y=2&z=3&s=';
+    assume(parse(url).query).equals('???&hl=en&src=api&x=2&y=2&z=3&s=');
+  });
+
+  describe('fuzzy', function () {
+    var fuzz = require('./fuzzy')
+      , times = 10;
+
+    for (var i = 0; i < times; i++) {
+      (function (spec) {
+        it('parses: '+ spec.href, function () {
+          var url = parse(spec.href)
+            , prop;
+
+          for (prop in spec) {
+            assume(url[prop]).equals(spec[prop]);
+          }
+        });
+      })(fuzz());
+    }
   });
 });

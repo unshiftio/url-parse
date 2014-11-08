@@ -1,107 +1,111 @@
 'use strict';
 
-var qs = require('querystringify');
+var required = require('requires-port')
+  , lolcation = require('./lolcation')
+  , qs = require('querystringify');
+
+//
+// MOARE: Mother Of All Regular Expressions.
+//
+var regexp = /^(?:(?:(([^:\/#\?]+:)?(?:(?:\/\/)(?:(?:(?:([^:@\/#\?]+)(?:\:([^:@\/#\?]*))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((?:\/?(?:[^\/\?#]+\/+)*)(?:[^\?#]*)))?(\?[^#]+)?)(#.*)?/
+  , keys = ',,protocol,username,password,host,hostname,port,pathname,query,hash'.split(',')
+  , parts = keys.length;
 
 /**
- * A DOM and Node.js compatible URL parser which leverages the DOM to do the
- * actual parsing of our URLs.
+ * The actual URL instance. Instead of returning an object we've opted-in to
+ * create an actual constructor as it's much more memory efficient and
+ * faster and it pleases my CDO.
  *
- * @type {Function}
- * @param {String} url URL that needs to be parsed.
- * @param {Boolean} qs Also parse the query string.
- * @returns {Object} A parsed URL.
+ * @constructor
+ * @param {String} address URL we want to parse.
+ * @param {Boolean|function} parser Parser for the query string.
+ * @param {Object} location Location defaults for relative paths.
  * @api public
  */
-var parse = 'undefined' !== typeof document ? function parse(url, qs) {
-  var div = document.createElement('div')
-    , data = {}
-    , key
-    , a;
+function URL(address, location, parser) {
+  if (!(this instanceof URL)) return new URL(address, location, parser);
 
   //
-  // Uses an innerHTML property to obtain an absolute URL for older browser
-  // support like IE6.
+  // The following if statements allows this module two have compatibility with
+  // 2 different API:
   //
-  // @see http://grack.com/blog/2009/11/17/absolutizing-url-in-javascript/
+  // 1. Node.js's `url.parse` api which accepts a URL, boolean as arguments
+  //    where the boolean indicates that the query string should also be parsed.
   //
-  div.innerHTML = '<a href="' + url + '"/>';
-  a = div.firstChild;
+  // 2. The `URL` interface of the browser which accepts a URL, object as
+  //    arguments. The supplied object will be used as default values / fall-back
+  //    for relative paths.
+  //
+  if ('object' !== typeof location) { parser = location; location = null; }
+  if (parser && 'function' !== typeof parser) parser = qs.parse;
 
-  //
-  // Transform it from a readOnly object to a read/writable object so we can
-  // change some parsed values. This is required if we ever want to override
-  // a port number etc. (as browsers remove port 443 and 80 from the URL's).
-  //
-  for (key in a) {
-    if ('string' === typeof a[key] || 'number' === typeof a[key]) {
-      data[key] = a[key];
+  location = lolcation(location);
+
+  for (var i = 0, bits = regexp.exec(address), key; i < parts; key = keys[++i]) {
+    if (key) {
+      this[key] = bits[i] || location[key] || '';
+
+      //
+      // The protocol, host, host name should always be lower cased even if they
+      // are supplied in uppercase. This way, when people generate an `origin`
+      // it be correct.
+      //
+      if (i === 2 || i === 5 || i === 6) this[key] = this[key].toLowerCase();
     }
   }
 
   //
-  // encodeURI and decodeURI are needed to normalize URL between IE and non-IE,
-  // since IE doesn't encode the href property value and return it
+  // Also parse the supplied query string in to an object. If we're supplied
+  // with a custom parser as function use that instead of the default build-in
+  // parser.
   //
-  // @see http://jsfiddle.net/Yq9M8/1/
-  //
-  data.href = encodeURI(decodeURI(data.href));
+  if (parser) this.query = parser(this.query);
 
   //
-  // If we don't obtain a port number (e.g. when using zombie) then try
-  // and guess at a value from the 'href' value.
+  // We should not add port numbers if they are already the default port number
+  // for a given protocol.
   //
-  if (!data.port) {
-    var splits = (data.href || '').split('/');
-    if (splits.length > 2) {
-      var host = splits[2]
-        , atSignIndex = host.lastIndexOf('@');
+  if (!required(this.port, this.protocol)) this.port = '';
 
-      if (~atSignIndex) host = host.slice(atSignIndex + 1);
+  //
+  // The href is just the compiled result.
+  //
+  this.href = this.toString();
+}
 
-      splits = host.split(':');
-      if (splits.length === 2) data.port = splits[1];
-    }
+/**
+ * Transform the properties back in to a valid and full URL string.
+ *
+ * @param {Function} stringify Optional query stringify function.
+ * @returns {String}
+ * @api public
+ */
+URL.prototype.toString = function toString(stringify) {
+  if (!stringify || 'function' !== typeof stringify) stringify = qs.stringify;
+
+  var result = this.protocol +'//'
+    , query;
+
+  if (this.username) result += this.username +':'+ this.password +'@';
+
+  result += this.hostname;
+  if (this.port) result += ':'+ this.port;
+
+  result += this.pathname;
+
+  if (this.query) {
+    if ('object' === typeof this.query) query = stringify(this.query);
+    else query = this.query;
+
+    result += (query.charAt(0) === '?' ? '' : '?') + query;
   }
 
-  //
-  // IE quirk: The `protocol` is parsed as ":" when a protocol agnostic URL
-  // is used. In this case we extract the value from the `href` value. In
-  // addition to that, it's possible in IE11 that the protocol is an string for
-  // relative URL's.
-  //
-  // @see https://github.com/primus/primus/issues/242
-  //
-  if (!data.protocol || ':' === data.protocol) {
-    data.protocol = data.href.substr(0, data.href.indexOf(':') + 1);
-  }
+  if (this.hash) result += this.hash;
 
-  //
-  // Safari 5.1.7 (windows) quirk: When parsing a URL without a port number
-  // the `port` in the data object will default to "0" instead of the expected
-  // "". We're going to do an explicit check on "0" and force it to "".
-  //
-  if ('0' === data.port) data.port = '';
-
-  //
-  // Browsers do not parse authorization information, so we need to extract
-  // that from the URL.
-  //
-  if (~data.href.indexOf('@') && !data.auth) {
-    var start = data.protocol.length + 2;
-    data.auth = data.href.slice(start, data.href.indexOf(data.pathname, start)).split('@')[0];
-  }
-
-  if (qs) {
-    data.query = qs.parse(data.query || data.search || '');
-  }
-
-  data.query = data.query || data.search;
-  return data;
-} : require('url').parse;
+  return result;
+};
 
 //
-// Expose the module.
+// Expose the URL parser.
 //
-parse.querystringify = qs.stringify;
-parse.querystring = qs.parse;
-module.exports = parse;
+module.exports = URL;
