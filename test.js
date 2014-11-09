@@ -73,10 +73,13 @@ describe('url-parse', function () {
   });
 
   it('removes default port numbers', function () {
-    var url = 'http://example.com:80';
+    var url = 'http://example.com:80'
+      , parsed = parse(url);
 
-    assume(parse(url).port).equals('');
-    assume(parse(url).href).equals('http://example.com');
+    assume(parsed.port).equals('');
+    assume(parsed.host).equals('example.com');
+    assume(parsed.hostname).equals('example.com');
+    assume(parsed.href).equals('http://example.com');
   });
 
   it('accepts @ in pathnames', function () {

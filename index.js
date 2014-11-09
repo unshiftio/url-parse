@@ -63,9 +63,13 @@ function URL(address, location, parser) {
 
   //
   // We should not add port numbers if they are already the default port number
-  // for a given protocol.
+  // for a given protocol. As the host also contains the port number we're going
+  // override it with the hostname which contains no port number.
   //
-  if (!required(this.port, this.protocol)) this.port = '';
+  if (!required(this.port, this.protocol)) {
+    this.host = this.hostname;
+    this.port = '';
+  }
 
   //
   // The href is just the compiled result.
