@@ -1,18 +1,18 @@
 # url-parse
-[![Made by
-unshift](https://img.shields.io/badge/made%20by-unshift-00ffcc.svg?style=flat-square)](http://unshift.io)[![Version
-npm](http://img.shields.io/npm/v/url-parse.svg?style=flat-square)](http://browsenpm.org/package/url-parse)[![Build
-Status](http://img.shields.io/travis/unshiftio/url-parse/master.svg?style=flat-square)](https://travis-ci.org/unshiftio/url-parse)[![Dependencies](https://img.shields.io/david/unshiftio/url-parse.svg?style=flat-square)](https://david-dm.org/unshiftio/url-parse)[![Coverage
-Status](http://img.shields.io/coveralls/unshiftio/url-parse/master.svg?style=flat-square)](https://coveralls.io/r/unshiftio/url-parse?branch=master)[![IRC
-channel](http://img.shields.io/badge/IRC-irc.freenode.net%23unshift-00a8ff.svg?style=flat-square)](http://webchat.freenode.net/?channels=unshift)
+[![Made by unshift](https://img.shields.io/badge/made%20by-unshift-00ffcc.svg?style=flat-square)](http://unshift.io)[![Version npm](http://img.shields.io/npm/v/url-parse.svg?style=flat-square)](http://browsenpm.org/package/url-parse)[![Build Status](http://img.shields.io/travis/unshiftio/url-parse/master.svg?style=flat-square)](https://travis-ci.org/unshiftio/url-parse)[![Dependencies](https://img.shields.io/david/unshiftio/url-parse.svg?style=flat-square)](https://david-dm.org/unshiftio/url-parse)[![Coverage Status](http://img.shields.io/coveralls/unshiftio/url-parse/master.svg?style=flat-square)](https://coveralls.io/r/unshiftio/url-parse?branch=master)[![IRC channel](http://img.shields.io/badge/IRC-irc.freenode.net%23unshift-00a8ff.svg?style=flat-square)](http://webchat.freenode.net/?channels=unshift)
 
-When required on node it will expose the `url` module's `.parse` method. When
-required in the browser it will offload the URL parsing to the `<a>` element in
-the DOM. This allows the module to be really tiny on the browser and still be
-usable on node.
+The `url-parse` method exposes two different API interfaces. The `url` interface
+that you know from Node.js and the new `URL` interface that is available in the
+latest browsers.
 
-In addition to parsing URL's it also has a really simple query string parser and
-query string stringify.
+Since `0.1` we've moved away from using the DOM's `<a>` element for URL parsing
+and moving to a full Regular Expression solution. The main reason for this
+change is to make the URL parser available in different JavaScript environments
+as you don't always have access to the DOM like `Worker` environments. This
+module still have a really small foot print as this module's main intention is
+to be bundled with client-side code.
+
+In addition to URL parsing we also expose the bundled `querystringify` module.
 
 ## Installation
 
@@ -30,37 +30,49 @@ All examples assume that this library is bootstrapped using:
 ```js
 'use strict';
 
-var parse = require('url-parse');
+var URL = require('url-parse');
 ```
 
-To parse an URL simply call the `parse` method with the URL that needs to be
+To parse an URL simply call the `URL` method with the URL that needs to be
 transformed in to an object.
 
 ```js
-var url = parse('https://github.com/foo/bar');
+var url = new URL('https://github.com/foo/bar');
 ```
 
-The URL should now be somewhat the same as the node.js's `url.parse` output. The
-notable exception being that in the browser not all properties would be set to
-null.
-
-### parse.querystring()
-
-Parse the given query string and return an object representation from it.
+The `new` keyword is optional but it will save you an extra function invocation.
+In the example above we've demonstrated the URL interface, but as said in the
+module description we also support the node.js interface. So you could also use
+the library in this way:
 
 ```js
-parse.querystring('foo=bar&bar=foo');
-parse.querystring('?foo=bar&bar=foo');
+'use strict';
+
+var parse = require('url-parse')
+  , url = parse('https://github.com/foo/bar', true);
 ```
 
-### parse.querystringify()
+The returned `url` instance contains the following properties:
 
-Take an object and make a query string from it.
+- `protocol`: Without slashes `http:`.
+- `username`: Username of basic authentication.
+- `password`: Password of basic authentication.
+- `host`: Host name with port number.
+- `hostname`: Host name without port number.
+- `port`: Optional port number.
+- `pathname`: URL path.
+- `query`: Prefixed with `?`
+- `hash`: Prefixed with `#`
+
+## URL.stringify()
+
+The returned `url` object comes with a custom `toString` method which will
+generate a full URL again when called. The method accepts an extra function
+which will stringify the query string for you. If you don't supply a function we
+will use our default method.
 
 ```js
-parse.querystringify({ foo: 'bar' });       // foo=bar
-parse.querystringify({ foo: 'bar' }, true); // ?foo=bar
-parse.querystringify({ foo: 'bar' }, '&');  // &foo=bar
+var location = url.toString(); // http://example.com/whatever/?qs=32
 ```
 
 ## License
