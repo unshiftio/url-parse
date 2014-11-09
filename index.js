@@ -108,4 +108,5 @@ URL.prototype.toString = function toString(stringify) {
 //
 // Expose the URL parser.
 //
+URL.qs = qs;
 module.exports = URL;
