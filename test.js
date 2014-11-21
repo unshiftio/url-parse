@@ -96,7 +96,6 @@ describe('url-parse', function () {
   it('does not inherit hashes and query strings from source object', function () {
     var data = parse('/foo', parse('http://foo:bar@sub.example.com/bar?foo=bar#hash'));
 
-
     assume(data.port).equals('');
     assume(data.username).equals('foo');
     assume(data.password).equals('bar');
