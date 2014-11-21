@@ -1,6 +1,15 @@
 'use strict';
 
-var URL;
+/**
+ * These properties should not be copied or inherited from. This is only needed
+ * for all non blob URL's as the a blob URL does not include a hash, only the
+ * origin.
+ *
+ * @type {Object}
+ * @private
+ */
+var ignore = { hash: 1, query: 1 }
+  , URL;
 
 /**
  * The location object differs when your code is loaded through a normal page,
@@ -24,6 +33,7 @@ module.exports = function lolcation(location) {
   if ('blob:' === location.protocol) {
     finaldestination = new URL(unescape(location.pathname));
   } else for (key in location) {
+    if (key in ignore) continue;
     finaldestination[key] = location[key];
   }
 
