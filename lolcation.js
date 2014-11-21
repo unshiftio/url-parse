@@ -31,7 +31,10 @@ module.exports = function lolcation(location) {
     , key;
 
   if ('blob:' === location.protocol) {
-    finaldestination = new URL(unescape(location.pathname));
+    finaldestination = new URL(unescape(location.pathname), {});
+  } else if ('string' === typeof location) {
+    finaldestination = new URL(location, {});
+    for (key in ignore) delete finaldestination[key];
   } else for (key in location) {
     if (key in ignore) continue;
     finaldestination[key] = location[key];

@@ -23,7 +23,9 @@ var regexp = /^(?:(?:(([^:\/#\?]+:)?(?:(?:\/\/)(?:(?:(?:([^:@\/#\?]+)(?:\:([^:@\
  * @api public
  */
 function URL(address, location, parser) {
-  if (!(this instanceof URL)) return new URL(address, location, parser);
+  if (!(this instanceof URL)) {
+    return new URL(address, location, parser);
+  }
 
   //
   // The following if statements allows this module two have compatibility with
@@ -36,8 +38,16 @@ function URL(address, location, parser) {
   //    arguments. The supplied object will be used as default values / fall-back
   //    for relative paths.
   //
-  if ('object' !== typeof location) { parser = location; location = null; }
-  if (parser && 'function' !== typeof parser) parser = qs.parse;
+  var type = typeof location;
+
+  if ('object' !== type && 'string' !== type) {
+    parser = location;
+    location = null;
+  }
+
+  if (parser && 'function' !== typeof parser) {
+    parser = qs.parse;
+  }
 
   location = lolcation(location);
 

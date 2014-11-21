@@ -103,6 +103,16 @@ describe('url-parse', function () {
     assume(data.href).equals('http://foo:bar@sub.example.com/foo');
   });
 
+  it('accepts a string as source argument', function () {
+    var data = parse('/foo', 'http://foo:bar@sub.example.com/bar?foo=bar#hash');
+
+    assume(data.port).equals('');
+    assume(data.username).equals('foo');
+    assume(data.password).equals('bar');
+    assume(data.host).equals('sub.example.com');
+    assume(data.href).equals('http://foo:bar@sub.example.com/foo');
+  });
+
   describe('fuzzy', function () {
     var fuzz = require('./fuzzy')
       , times = 10;
