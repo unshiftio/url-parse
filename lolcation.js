@@ -19,25 +19,26 @@ var ignore = { hash: 1, query: 1 }
  * encoded in the `pathname` so we can thankfully generate a good "default"
  * location from it so we can generate proper relative URL's again.
  *
- * @param {Object} location Optional default location object.
+ * @param {Object} loc Optional default location object.
  * @returns {Object} lolcation object.
  * @api public
  */
-module.exports = function lolcation(location) {
-  location = location || (new Function('return this.location'))() || {};
+module.exports = function lolcation(loc) {
+  loc = loc || global.location || {};
   URL = URL || require('./');
 
   var finaldestination = {}
+    , type = typeof loc
     , key;
 
-  if ('blob:' === location.protocol) {
-    finaldestination = new URL(unescape(location.pathname), {});
-  } else if ('string' === typeof location) {
-    finaldestination = new URL(location, {});
+  if ('blob:' === loc.protocol) {
+    finaldestination = new URL(unescape(loc.pathname), {});
+  } else if ('string' === type) {
+    finaldestination = new URL(loc, {});
     for (key in ignore) delete finaldestination[key];
-  } else for (key in location) {
+  } else if ('object' === type) for (key in loc) {
     if (key in ignore) continue;
-    finaldestination[key] = location[key];
+    finaldestination[key] = loc[key];
   }
 
   return finaldestination;
