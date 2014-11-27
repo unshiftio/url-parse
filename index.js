@@ -120,7 +120,9 @@ URL.prototype.toString = function toString(stringify) {
 };
 
 //
-// Expose the URL parser.
+// Expose the URL parser and some additional properties that might be useful for
+// others.
 //
 URL.qs = qs;
+URL.location = lolcation;
 module.exports = URL;

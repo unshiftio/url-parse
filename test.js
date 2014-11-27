@@ -8,6 +8,14 @@ describe('url-parse', function () {
     assume(parse).is.a('function');
   });
 
+  it('exposes the querystring module', function () {
+    assume(parse.qs).equals(require('querystringify'));
+  });
+
+  it('exposes the location function', function () {
+    assume(parse.location).equals(require('./lolcation'));
+  });
+
   it('parsers the query string', function () {
     var url = 'http://google.com/?foo=bar'
       , data = parse(url, true);
