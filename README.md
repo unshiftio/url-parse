@@ -61,10 +61,28 @@ The returned `url` instance contains the following properties:
 - `hostname`: Host name without port number.
 - `port`: Optional port number.
 - `pathname`: URL path.
-- `query`: Prefixed with `?`
+- `query`: Parsed object containing query string, unless parsing is set to false.
 - `hash`: Prefixed with `#`
+- `href`: The full URL.
 
-## URL.stringify()
+## URL.set(key, value)
+
+A simple helper function to change parts of the URL and propagating it through
+all properties. When you set a new `host` you want the same value to be applied
+to `port` if has a different port number, `hostname` so it has a correct name
+again and `href` so you have a complete URL.
+
+```js
+var parsed = parse('http://google.com/parse-things');
+
+parsed.set('hostname', 'yahoo.com');
+console.log(parsed.href); // http://yahoo.com/parse-things
+```
+
+It's aware of default ports so you cannot set a port 80 on an URL which has
+`http` as protocol.
+
+## URL.toString()
 
 The returned `url` object comes with a custom `toString` method which will
 generate a full URL again when called. The method accepts an extra function
@@ -74,6 +92,10 @@ will use our default method.
 ```js
 var location = url.toString(); // http://example.com/whatever/?qs=32
 ```
+
+You would rarely need to use this method as the full URL is also available as
+`href` property. If you are using the `URL.set` method to make changes, this
+will automatically update.
 
 ## License
 
