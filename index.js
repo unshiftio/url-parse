@@ -5,7 +5,7 @@ var required = require('requires-port')
   , qs = require('querystringify');
 
 var keys = ',,protocol,username,password,host,hostname,port,pathname,query,hash'.split(',')
-  , inherit = { protocol: 1, host: 1, hostname: 1, username: 1, password: 1 }
+  , inherit = { protocol: 1, host: 1, hostname: 1 }
   , parts = keys.length;
 
 /**

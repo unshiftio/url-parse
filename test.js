@@ -101,24 +101,48 @@ describe('url-parse', function () {
     assume(parse(url).query).equals('???&hl=en&src=api&x=2&y=2&z=3&s=');
   });
 
-  it('does not inherit hashes and query strings from source object', function () {
-    var data = parse('/foo', parse('http://foo:bar@sub.example.com/bar?foo=bar#hash'));
+  it('does not inherit auth from source object', function () {
+    var data = parse('/foo', parse('http://foo:bar@sub.example.com'));
 
     assume(data.port).equals('');
-    assume(data.username).equals('foo');
-    assume(data.password).equals('bar');
+    assume(data.username).equals('');
+    assume(data.password).equals('');
     assume(data.host).equals('sub.example.com');
-    assume(data.href).equals('http://foo:bar@sub.example.com/foo');
+    assume(data.href).equals('http://sub.example.com/foo');
+  });
+
+  it('does not inherit hashes and query strings from source object', function () {
+    var data = parse('/foo', parse('http://sub.example.com/bar?foo=bar#hash'));
+
+    assume(data.port).equals('');
+    assume(data.host).equals('sub.example.com');
+    assume(data.href).equals('http://sub.example.com/foo');
+  });
+
+  it('does not inherit pathnames from the source', function () {
+    var data = parse('http://localhost', parse('http://foo:bar@sub.example.com/bar?foo=bar#hash'));
+
+    assume(data.port).equals('');
+    assume(data.host).equals('localhost');
+    assume(data.href).equals('http://localhost');
+  });
+
+  it('does not inherit port numbers', function () {
+    it('does not inherit pathnames from the source', function () {
+      var data = parse('http://localhost', parse('http://sub.example.com:808/'));
+
+      assume(data.port).equals('');
+      assume(data.host).equals('localhost');
+      assume(data.href).equals('http://localhost/');
+    });
   });
 
   it('accepts a string as source argument', function () {
-    var data = parse('/foo', 'http://foo:bar@sub.example.com/bar?foo=bar#hash');
+    var data = parse('/foo', 'http://sub.example.com/bar?foo=bar#hash');
 
     assume(data.port).equals('');
-    assume(data.username).equals('foo');
-    assume(data.password).equals('bar');
     assume(data.host).equals('sub.example.com');
-    assume(data.href).equals('http://foo:bar@sub.example.com/foo');
+    assume(data.href).equals('http://sub.example.com/foo');
   });
 
   describe('fuzzy', function () {
