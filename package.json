@@ -24,7 +24,7 @@
   "license": "MIT",
   "devDependencies": {
     "assume": "0.0.x",
-    "browserify": "6.2.x",
+    "browserify": "7.0.x",
     "istanbul": "0.3.x",
     "mocha": "2.0.x",
     "pre-commit": "0.0.x"
