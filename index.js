@@ -4,11 +4,7 @@ var required = require('requires-port')
   , lolcation = require('./lolcation')
   , qs = require('querystringify');
 
-//
-// MOARE: Mother Of All Regular Expressions.
-//
-var regexp = /^(?:(?:(([^:\/#\?]+:)?(?:(?:\/\/)(?:(?:(?:([^:@\/#\?]+)(?:\:([^:@\/#\?]*))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((?:\/?(?:[^\/\?#]+\/+)*)(?:[^\?#]*)))?(\?[^#]+)?)(#.*)?/
-  , keys = ',,protocol,username,password,host,hostname,port,pathname,query,hash'.split(',')
+var keys = ',,protocol,username,password,host,hostname,port,pathname,query,hash'.split(',')
   , parts = keys.length;
 
 /**
@@ -26,6 +22,18 @@ function URL(address, location, parser) {
   if (!(this instanceof URL)) {
     return new URL(address, location, parser);
   }
+
+  //
+  // Inline the massive regular expression because it causes issues in FireFox
+  // because our `exec` usage in this function. Normally there should be no side
+  // affects because we're not doing global matching so the lastIndex of regular
+  // expression should stay the same but it's causing `too much recursion`
+  // errors in FireFox when calling the parse method for a second time. Now,
+  // with great pleasure I introduce to you:
+  //
+  // MOARE: Mother Of All Regular Expressions.
+  //
+  var regexp = /^(?:(?:(([^:\/#\?]+:)?(?:(?:\/\/)(?:(?:(?:([^:@\/#\?]+)(?:\:([^:@\/#\?]*))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((?:\/?(?:[^\/\?#]+\/+)*)(?:[^\?#]*)))?(\?[^#]+)?)(#.*)?/;
 
   //
   // The following if statements allows this module two have compatibility with
