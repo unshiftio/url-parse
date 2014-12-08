@@ -128,13 +128,11 @@ describe('url-parse', function () {
   });
 
   it('does not inherit port numbers', function () {
-    it('does not inherit pathnames from the source', function () {
-      var data = parse('http://localhost', parse('http://sub.example.com:808/'));
+    var data = parse('http://localhost', parse('http://sub.example.com:808/'));
 
-      assume(data.port).equals('');
-      assume(data.host).equals('localhost');
-      assume(data.href).equals('http://localhost/');
-    });
+    assume(data.port).equals('');
+    assume(data.host).equals('localhost');
+    assume(data.href).equals('http://localhost');
   });
 
   it('accepts a string as source argument', function () {
@@ -201,6 +199,18 @@ describe('url-parse', function () {
       var data = parse('http://google.com/?foo=bar');
 
       assume(data.set('host', 'yahoo.com:808')).equals(data);
+
+      assume(data.hostname).equals('yahoo.com');
+      assume(data.host).equals('yahoo.com:808');
+      assume(data.port).equals('808');
+
+      assume(data.href).equals('http://yahoo.com:808/?foo=bar');
+    });
+
+    it('updates the host when updating hostname', function () {
+      var data = parse('http://google.com:808/?foo=bar');
+
+      assume(data.set('hostname', 'yahoo.com')).equals(data);
 
       assume(data.hostname).equals('yahoo.com');
       assume(data.host).equals('yahoo.com:808');
