@@ -5,6 +5,7 @@ var required = require('requires-port')
   , qs = require('querystringify');
 
 var keys = ',,protocol,username,password,host,hostname,port,pathname,query,hash'.split(',')
+  , inherit = { protocol: 1, host: 1, hostname: 1, username: 1, password: 1 }
   , parts = keys.length;
 
 /**
@@ -33,7 +34,12 @@ function URL(address, location, parser) {
   //
   // MOARE: Mother Of All Regular Expressions.
   //
-  var regexp = /^(?:(?:(([^:\/#\?]+:)?(?:(?:\/\/)(?:(?:(?:([^:@\/#\?]+)(?:\:([^:@\/#\?]*))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((?:\/?(?:[^\/\?#]+\/+)*)(?:[^\?#]*)))?(\?[^#]+)?)(#.*)?/;
+  var regexp = /^(?:(?:(([^:\/#\?]+:)?(?:(?:\/\/)(?:(?:(?:([^:@\/#\?]+)(?:\:([^:@\/#\?]*))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((?:\/?(?:[^\/\?#]+\/+)*)(?:[^\?#]*)))?(\?[^#]+)?)(#.*)?/
+    , bits = regexp.exec(address)
+    , type = typeof location
+    , url = this
+    , i = 0
+    , key;
 
   //
   // The following if statements allows this module two have compatibility with
@@ -46,8 +52,6 @@ function URL(address, location, parser) {
   //    arguments. The supplied object will be used as default values / fall-back
   //    for relative paths.
   //
-  var type = typeof location;
-
   if ('object' !== type && 'string' !== type) {
     parser = location;
     location = null;
@@ -59,17 +63,17 @@ function URL(address, location, parser) {
 
   location = lolcation(location);
 
-  for (var i = 0, bits = regexp.exec(address), key; i < parts; key = keys[++i]) {
-    if (key) {
-      this[key] = bits[i] || location[key] || '';
+  for (; i < parts; key = keys[++i]) {
+    if (!key) continue;
 
-      //
-      // The protocol, host, host name should always be lower cased even if they
-      // are supplied in uppercase. This way, when people generate an `origin`
-      // it be correct.
-      //
-      if (i === 2 || i === 5 || i === 6) this[key] = this[key].toLowerCase();
-    }
+    url[key] = bits[i] || (key in inherit ? location[key] || '' : '');
+
+    //
+    // The protocol, host, host name should always be lower cased even if they
+    // are supplied in uppercase. This way, when people generate an `origin`
+    // it be correct.
+    //
+    if (i === 2 || i === 5 || i === 6) url[key] = url[key].toLowerCase();
   }
 
   //
@@ -77,23 +81,64 @@ function URL(address, location, parser) {
   // with a custom parser as function use that instead of the default build-in
   // parser.
   //
-  if (parser) this.query = parser(this.query);
+  if (parser) url.query = parser(url.query);
 
   //
   // We should not add port numbers if they are already the default port number
   // for a given protocol. As the host also contains the port number we're going
   // override it with the hostname which contains no port number.
   //
-  if (!required(this.port, this.protocol)) {
-    this.host = this.hostname;
-    this.port = '';
+  if (!required(url.port, url.protocol)) {
+    url.host = url.hostname;
+    url.port = '';
   }
 
   //
   // The href is just the compiled result.
   //
-  this.href = this.toString();
+  url.href = url.toString();
 }
+
+/**
+ * This is convenience method for changing properties in the URL instance to
+ * insure that they all propagate correctly.
+ *
+ * @param {String} prop Property we need to adjust.
+ * @param {Mixed} value The newly assigned value.
+ * @returns {URL}
+ * @api public
+ */
+URL.prototype.set = function set(part, value, fn) {
+  var url = this;
+
+  if ('query' === part) {
+    if ('string' === typeof value) value = (fn || qs.parse)(value);
+    url[part] = value;
+  } else if ('port' === part) {
+    url[part] = value;
+
+    if (!required(value, url.protocol)) {
+      url.host = url.hostname;
+      url[part] = '';
+    } else if (value) {
+      url.host = url.hostname +':'+ value;
+    }
+  } else if ('hostname' === part) {
+    url[part] = value;
+
+    if (url.port) value += ':'+ url.port;
+    url.host = value;
+  } else if ('host' === part) {
+    url[part] = value;
+
+    if (/\:\d+/.test(value)) url.set('port', value.split(':').pop());
+  } else {
+    url[part] = value;
+  }
+
+  url.href = url.toString();
+  return url;
+};
 
 /**
  * Transform the properties back in to a valid and full URL string.
@@ -105,24 +150,25 @@ function URL(address, location, parser) {
 URL.prototype.toString = function toString(stringify) {
   if (!stringify || 'function' !== typeof stringify) stringify = qs.stringify;
 
-  var result = this.protocol +'//'
-    , query;
+  var query
+    , url = this
+    , result = url.protocol +'//';
 
-  if (this.username) result += this.username +':'+ this.password +'@';
+  if (url.username) result += url.username +':'+ url.password +'@';
 
-  result += this.hostname;
-  if (this.port) result += ':'+ this.port;
+  result += url.hostname;
+  if (url.port) result += ':'+ url.port;
 
-  result += this.pathname;
+  result += url.pathname;
 
-  if (this.query) {
-    if ('object' === typeof this.query) query = stringify(this.query);
-    else query = this.query;
+  if (url.query) {
+    if ('object' === typeof url.query) query = stringify(url.query);
+    else query = url.query;
 
     result += (query.charAt(0) === '?' ? '' : '?') + query;
   }
 
-  if (this.hash) result += this.hash;
+  if (url.hash) result += url.hash;
 
   return result;
 };
