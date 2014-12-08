@@ -145,6 +145,80 @@ describe('url-parse', function () {
     assume(data.href).equals('http://sub.example.com/foo');
   });
 
+  describe('#set', function () {
+    it('correctly updates the host when setting port', function () {
+      var data = parse('http://google.com/foo');
+
+      assume(data.set('port', 8080)).equals(data);
+
+      assume(data.host).equals('google.com:8080');
+      assume(data.href).equals('http://google.com:8080/foo');
+    });
+
+    it('only sets port when its not default', function () {
+      var data = parse('http://google.com/foo');
+
+      assume(data.set('port', 80)).equals(data);
+
+      assume(data.host).equals('google.com');
+      assume(data.href).equals('http://google.com/foo');
+
+      assume(data.set('port', 443)).equals(data);
+      assume(data.host).equals('google.com:443');
+      assume(data.href).equals('http://google.com:443/foo');
+    });
+
+    it('updates query with object', function () {
+      var data = parse('http://google.com/?foo=bar');
+
+      assume(data.set('query', { bar: 'foo' })).equals(data);
+
+      assume(data.query.foo).equals(undefined);
+      assume(data.query.bar).equals('foo');
+
+      assume(data.href).equals('http://google.com/?bar=foo');
+    });
+
+    it('updates query with a string', function () {
+      var data = parse('http://google.com/?foo=bar');
+
+      assume(data.set('query', 'bar=foo')).equals(data);
+
+      assume(data.query.foo).equals(undefined);
+      assume(data.query.bar).equals('foo');
+
+      assume(data.href).equals('http://google.com/?bar=foo');
+
+      assume(data.set('query', '?baz=foo')).equals(data);
+
+      assume(data.query.bar).equals(undefined);
+      assume(data.query.baz).equals('foo');
+
+      assume(data.href).equals('http://google.com/?baz=foo');
+    });
+
+    it('updates the port when updating host', function () {
+      var data = parse('http://google.com/?foo=bar');
+
+      assume(data.set('host', 'yahoo.com:808')).equals(data);
+
+      assume(data.hostname).equals('yahoo.com');
+      assume(data.host).equals('yahoo.com:808');
+      assume(data.port).equals('808');
+
+      assume(data.href).equals('http://yahoo.com:808/?foo=bar');
+    });
+
+    it('updates other values', function () {
+      var data = parse('http://google.com/?foo=bar');
+
+      assume(data.set('protocol', 'https:')).equals(data);
+      assume(data.protocol).equals('https:');
+
+      assume(data.href).equals('https://google.com/?foo=bar');
+    });
+  });
+
   describe('fuzzy', function () {
     var fuzz = require('./fuzzy')
       , times = 10;
