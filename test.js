@@ -61,6 +61,14 @@ describe('url-parse', function () {
     assume(parse(url).protocol).equals('http:');
   });
 
+  it('can parse complex urls multiple times without errors', function () {
+    var url = 'https://www.mozilla.org/en-US/firefox/34.0/whatsnew/?oldversion=33.1';
+
+    for (var i = 0; i < 100; i++) {
+      parse(url);
+    }
+  });
+
   it('converts hostname to lowercase', function () {
     var url = 'HTTP://fOo.eXaMPle.com';
 
