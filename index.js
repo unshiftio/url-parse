@@ -8,37 +8,6 @@ var keys = ',,protocol,username,password,host,hostname,port,pathname,query,hash'
   , inherit = { protocol: 1, host: 1, hostname: 1 }
   , parts = keys.length;
 
-//
-// Story time children:
-//
-// FireFox 34 has some problems with their Regular Expression engine and
-// executing a RegExp can cause a `too much recursion` error. We initially fixed
-// this by moving the Regular Expression in the URL constructor so it's created
-// every single time. This fixed it for some URL's but the more complex the
-// URL's get the easier it is to trigger. Complexer URL like:
-//
-//   https://www.mozilla.org/en-US/firefox/34.0/whatsnew/?oldversion=33.1
-//
-// Still triggered the recursion error. After talking with Chrome and FireFox
-// engineers it seemed to be caused by:
-//
-//   https://code.google.com/p/v8/issues/detail?id=430
-//
-// As FireFox started using Chrome's RegExp engine. After testing various of
-// workarounds I finally stumbled upon this gem, use new RegExp as it sometimes
-// behaves different then a RegExp literal.
-//
-// Steps for compiling the new RegExp:
-//
-// 1. Take the regular RegExp as seen below.
-// 2. Escape the RegExp using XRegExp.escape from http://xregexp.com/tests/
-// 3. ??
-// 4. Profit.
-//
-// RegExp source: /^(?:(?:(([^:\/#\?]+:)?(?:(?:\/\/)(?:(?:(?:([^:@\/#\?]+)(?:\:([^:@\/#\?]*))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((?:\/?(?:[^\/\?#]+\/+)*)(?:[^\?#]*)))?(\?[^#]+)?)(#.*)?/
-//
-var regexp = new RegExp('\^\(\?:\(\?:\(\(\[\^:\\/\#\\\?\]\+:\)\?\(\?:\(\?:\\/\\/\)\(\?:\(\?:\(\?:\(\[\^:@\\/\#\\\?\]\+\)\(\?:\\:\(\[\^:@\\/\#\\\?\]\*\)\)\?\)@\)\?\(\(\[\^:\\/\#\\\?\\\]\\\[\]\+\|\\\[\[\^\\/\\\]@\#\?\]\+\\\]\)\(\?:\\:\(\[0\-9\]\+\)\)\?\)\)\?\)\?\)\?\(\(\?:\\/\?\(\?:\[\^\\/\\\?\#\]\+\\/\+\)\*\)\(\?:\[\^\\\?\#\]\*\)\)\)\?\(\\\?\[\^\#\]\+\)\?\)\(\#\.\*\)\?');
-
 /**
  * The actual URL instance. Instead of returning an object we've opted-in to
  * create an actual constructor as it's much more memory efficient and
@@ -55,7 +24,37 @@ function URL(address, location, parser) {
     return new URL(address, location, parser);
   }
 
-  var bits = regexp.exec(address)
+  //
+  // Story time children:
+  //
+  // FireFox 34 has some problems with their Regular Expression engine and
+  // executing a RegExp can cause a `too much recursion` error. We initially fixed
+  // this by moving the Regular Expression in the URL constructor so it's created
+  // every single time. This fixed it for some URL's but the more complex the
+  // URL's get the easier it is to trigger. Complexer URL like:
+  //
+  //   https://www.mozilla.org/en-US/firefox/34.0/whatsnew/?oldversion=33.1
+  //
+  // Still triggered the recursion error. After talking with Chrome and FireFox
+  // engineers it seemed to be caused by:
+  //
+  //   https://code.google.com/p/v8/issues/detail?id=430
+  //
+  // As FireFox started using Chrome's RegExp engine. After testing various of
+  // workarounds I finally stumbled upon this gem, use new RegExp as it sometimes
+  // behaves different then a RegExp literal.
+  //
+  // Steps for compiling the new RegExp:
+  //
+  // 1. Take the regular RegExp as seen below.
+  // 2. Escape the RegExp using XRegExp.escape from http://xregexp.com/tests/
+  // 3. ??
+  // 4. Profit.
+  //
+  // RegExp source: /^(?:(?:(([^:\/#\?]+:)?(?:(?:\/\/)(?:(?:(?:([^:@\/#\?]+)(?:\:([^:@\/#\?]*))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((?:\/?(?:[^\/\?#]+\/+)*)(?:[^\?#]*)))?(\?[^#]+)?)(#.*)?/
+  //
+  var regexp = new RegExp('\^\(\?:\(\?:\(\(\[\^:\\/\#\\\?\]\+:\)\?\(\?:\(\?:\\/\\/\)\(\?:\(\?:\(\?:\(\[\^:@\\/\#\\\?\]\+\)\(\?:\\:\(\[\^:@\\/\#\\\?\]\*\)\)\?\)@\)\?\(\(\[\^:\\/\#\\\?\\\]\\\[\]\+\|\\\[\[\^\\/\\\]@\#\?\]\+\\\]\)\(\?:\\:\(\[0\-9\]\+\)\)\?\)\)\?\)\?\)\?\(\(\?:\\/\?\(\?:\[\^\\/\\\?\#\]\+\\/\+\)\*\)\(\?:\[\^\\\?\#\]\*\)\)\)\?\(\\\?\[\^\#\]\+\)\?\)\(\#\.\*\)\?')
+    , bits = regexp.exec(address)
     , type = typeof location
     , url = this
     , i = 0
