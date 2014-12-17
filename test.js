@@ -118,12 +118,29 @@ describe('url-parse', function () {
   });
 
   describe('inheritance', function () {
-    it('does not inherit port numbers', function () {
+    it('does not inherit port numbers for non relative urls', function () {
       var data = parse('http://localhost', parse('http://sub.example.com:808/'));
 
       assume(data.port).equals('');
       assume(data.host).equals('localhost');
       assume(data.href).equals('http://localhost');
+    });
+
+    it('does inherit port numbers from relative urls', function () {
+      var data = parse('/foo', parse('http://sub.example.com:808/'));
+
+      assume(data.port).equals('808');
+      assume(data.host).equals('sub.example.com');
+      assume(data.href).equals('http://sub.example.com:808/foo');
+    });
+
+    it('inherits protocol for relative protocols', function () {
+      var data = parse('//foo.com/foo', parse('http://sub.example.com:808/'));
+
+      assume(data.port).equals('');
+      assume(data.host).equals('foo.com');
+      assume(data.protocol).equals('http:');
+      assume(data.href).equals('http://foo.com/foo');
     });
 
     it('does not inherit pathnames from the source', function () {
