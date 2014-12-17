@@ -6,6 +6,7 @@ var required = require('requires-port')
 
 var keys = ',,protocol,username,password,host,hostname,port,pathname,query,hash'.split(',')
   , inherit = { protocol: 1, host: 1, hostname: 1 }
+  , relativere = /^\/(?!\/)/
   , parts = keys.length;
 
 /**
@@ -58,6 +59,7 @@ function URL(address, location, parser) {
   // RegExp source: /^(?:(?:(([^:\/#\?]+:)?(?:(?:\/\/)(?:(?:(?:([^:@\/#\?]+)(?:\:([^:@\/#\?]*))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((?:\/?(?:[^\/\?#]+\/+)*)(?:[^\?#]*)))?(\?[^#]+)?)(#.*)?/
   //
   var regexp = new RegExp('\^\(\?:\(\?:\(\(\[\^:\\/\#\\\?\]\+:\)\?\(\?:\(\?:\\/\\/\)\(\?:\(\?:\(\?:\(\[\^:@\\/\#\\\?\]\+\)\(\?:\\:\(\[\^:@\\/\#\\\?\]\*\)\)\?\)@\)\?\(\(\[\^:\\/\#\\\?\\\]\\\[\]\+\|\\\[\[\^\\/\\\]@\#\?\]\+\\\]\)\(\?:\\:\(\[0\-9\]\+\)\)\?\)\)\?\)\?\)\?\(\(\?:\\/\?\(\?:\[\^\\/\\\?\#\]\+\\/\+\)\*\)\(\?:\[\^\\\?\#\]\*\)\)\)\?\(\\\?\[\^\#\]\+\)\?\)\(\#\.\*\)\?')
+    , relative = relativere.test(address)
     , bits = regexp.exec(address)
     , type = typeof location
     , url = this
@@ -89,7 +91,7 @@ function URL(address, location, parser) {
   for (; i < parts; key = keys[++i]) {
     if (!key) continue;
 
-    url[key] = bits[i] || (key in inherit ? location[key] || '' : '');
+    url[key] = bits[i] || (key in inherit || ('port' === key && relative) ? location[key] || '' : '');
 
     //
     // The protocol, host, host name should always be lower cased even if they

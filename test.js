@@ -130,7 +130,8 @@ describe('url-parse', function () {
       var data = parse('/foo', parse('http://sub.example.com:808/'));
 
       assume(data.port).equals('808');
-      assume(data.host).equals('sub.example.com');
+      assume(data.hostname).equals('sub.example.com');
+      assume(data.host).equals('sub.example.com:808');
       assume(data.href).equals('http://sub.example.com:808/foo');
     });
 
