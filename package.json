@@ -7,7 +7,9 @@
     "test": "mocha --reporter spec --ui bdd test.js",
     "coverage": "istanbul cover ./node_modules/.bin/_mocha -- --reporter spec --ui bdd test.js",
     "test-travis": "istanbul cover node_modules/.bin/_mocha --report lcovonly -- --reporter spec --ui bdd test.js",
-    "browserify": "browserify index.js -o dist/url-parse.js --standalone URLParse"
+    "browserify": "browserify index.js -o dist/url-parse.js --standalone URLParse",
+    "phantomjs": "mocha-phantomjs --reporter spec --ui bdd test.js",
+    "testling": "testling -u"
   },
   "keywords": [
     "URL",
@@ -27,7 +29,9 @@
     "browserify": "7.0.x",
     "istanbul": "0.3.x",
     "mocha": "2.0.x",
-    "pre-commit": "0.0.x"
+    "mocha-phantomjs": "3.5.x",
+    "pre-commit": "0.0.x",
+    "testling": "1.7.x"
   },
   "testling": {
     "files": "test.js",
