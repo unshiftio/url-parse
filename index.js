@@ -59,7 +59,6 @@ function URL(address, location, parser) {
     , type = typeof location
     , url = this
     , i = 0
-    , bits
     , key;
 
   //
