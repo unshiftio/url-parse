@@ -97,6 +97,19 @@ You would rarely need to use this method as the full URL is also available as
 `href` property. If you are using the `URL.set` method to make changes, this
 will automatically update.
 
+## Testing
+
+The testing of this module is done in 3 different ways:
+
+1. We have unit tests setup which run under Node.js using the normal `npm test`
+   command.
+2. Code coverage can be run manually using `npm run coverage`
+3. For browser testing we use `testling` to startup a test server. We do assume
+   that you `testling` installed globally, if not please run `npm install -g
+   testling` and after that `testling -u` in the root of this repository. When
+   you visit the outputted URL all unit tests that were written from the Node
+   can now be ran inside browsers.
+
 ## License
 
 MIT
