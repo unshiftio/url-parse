@@ -42,7 +42,11 @@ function URL(address, location, parser) {
   //
   // As FireFox started using Chrome's RegExp engine. After testing various of
   // workarounds I finally stumbled upon this gem, use new RegExp as it sometimes
-  // behaves different then a RegExp literal.
+  // behaves different then a RegExp literal. The biggest problem with this
+  // FireFox problem is that it's super hard to reproduce as our "normal" test
+  // suite doesn't catch it. The only way to reproduce it was run the parser in
+  // jsperf.com (uses the benchmark module from npm) and supply it the URL
+  // mentioned above as URL to parse.
   //
   // Steps for compiling the new RegExp:
   //
