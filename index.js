@@ -58,13 +58,40 @@ function URL(address, location, parser) {
   //
   // RegExp source: /^(?:(?:(([^:\/#\?]+:)?(?:(?:\/\/)(?:(?:(?:([^:@\/#\?]+)(?:\:([^:@\/#\?]*))?)@)?(([^:\/#\?\]\[]+|\[[^\/\]@#?]+\])(?:\:([0-9]+))?))?)?)?((?:\/?(?:[^\/\?#]+\/+)*)(?:[^\?#]*)))?(\?[^#]+)?)(#.*)?/
   //
-  var regexp = new RegExp('\^\(\?:\(\?:\(\(\[\^:\\/\#\\\?\]\+:\)\?\(\?:\(\?:\\/\\/\)\(\?:\(\?:\(\?:\(\[\^:@\\/\#\\\?\]\+\)\(\?:\\:\(\[\^:@\\/\#\\\?\]\*\)\)\?\)@\)\?\(\(\[\^:\\/\#\\\?\\\]\\\[\]\+\|\\\[\[\^\\/\\\]@\#\?\]\+\\\]\)\(\?:\\:\(\[0\-9\]\+\)\)\?\)\)\?\)\?\)\?\(\(\?:\\/\?\(\?:\[\^\\/\\\?\#\]\+\\/\+\)\*\)\(\?:\[\^\\\?\#\]\*\)\)\)\?\(\\\?\[\^\#\]\+\)\?\)\(\#\.\*\)\?')
-    , relative = relativere.test(address)
-    , bits = regexp.exec(address)
+  var relative = relativere.test(address)
     , type = typeof location
     , url = this
-    , i = 0
-    , key;
+    , i;
+
+  // backwards parsing
+  if (~(i = address.indexOf('#'))) {
+    url.hash = address.slice(i);
+    address = address.slice(0, i);
+  }
+
+  // backwards parsing
+  if (~(i = address.indexOf('?'))) {
+    url.query = address.slice(i);
+    address = address.slice(0, i);
+  }
+
+  // forward parsing
+  if (~(i = address.indexOf('//'))) {
+    url.protocol = address.slice(0, i);
+    address = address.slice(i);
+  }
+
+  // forward parsing
+  if (~(i = address.indexOf('@'))) {
+    url.auth = address.slice(0, i);
+    address = address.slice(i + 1);
+  }
+
+  // backwards parsing
+  if (~(i = address.indexOf('/'))) {
+    url.pathname = address.slice(i);
+    address = address.slice(0, i);
+  }
 
   //
   // The following if statements allows this module two have compatibility with
