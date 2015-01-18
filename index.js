@@ -125,12 +125,11 @@ function URL(address, location, parser) {
   //
   // Parse down the `auth` for the username and password.
   //
+  url.username = url.password = '';
   if (url.auth) {
     instruction = url.auth.split(':');
-    url.username = instruction[0];
-    url.password = instruction[1];
-  } else {
-    url.username = url.password = '';
+    url.username = instruction[0] || '';
+    url.password = instruction[1] || '';
   }
 
   //
