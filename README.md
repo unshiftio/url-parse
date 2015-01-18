@@ -10,7 +10,10 @@ and moving to a full Regular Expression solution. The main reason for this
 change is to make the URL parser available in different JavaScript environments
 as you don't always have access to the DOM like `Worker` environments. This
 module still have a really small foot print as this module's main intention is
-to be bundled with client-side code.
+to be bundled with client-side code. The only problem however with a RegExp
+based solution is that it required a lot of lookups causing major problems in
+FireFox. So the last and the current solution was a pure string parsing
+solution which chops up the URL in smaller pieces.
 
 In addition to URL parsing we also expose the bundled `querystringify` module.
 
