@@ -1,6 +1,6 @@
 {
   "name": "url-parse",
-  "version": "0.2.3",
+  "version": "1.0.0",
   "description": "Parse URL in node using the URL module and in the browser using the DOM",
   "main": "index.js",
   "scripts": {
@@ -25,10 +25,10 @@
   "author": "Arnout Kazemier",
   "license": "MIT",
   "devDependencies": {
-    "assume": "0.0.x",
-    "browserify": "7.0.x",
+    "assume": "1.0.x",
+    "browserify": "8.1.x",
     "istanbul": "0.3.x",
-    "mocha": "2.0.x",
+    "mocha": "2.1.x",
     "mochify": "2.1.x",
     "pre-commit": "0.0.x",
     "testling": "1.7.x"
