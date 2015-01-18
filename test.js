@@ -75,13 +75,6 @@ describe('url-parse', function () {
     assume(parse(url).hostname).equals('foo.example.com');
   });
 
-  it('does not lowercase the USER:PASS', function () {
-    var url = 'HTTP://USER:PASS@EXAMPLE.COM';
-
-    assume(parse(url).username).equals('USER');
-    assume(parse(url).password).equals('PASS');
-  });
-
   it('does not lowercase the path', function () {
     var url = 'HTTP://X.COM/Y/Z';
 
@@ -98,10 +91,113 @@ describe('url-parse', function () {
     assume(parsed.href).equals('http://example.com');
   });
 
-  it('accepts @ in pathnames', function () {
-    var url = 'http://mt0.google.com/vt/lyrs=m@114&hl=en&src=api&x=2&y=2&z=3&s=';
+  it('understands an / as pathname', function () {
+    var url = 'http://example.com:80/'
+      , parsed = parse(url);
 
-    assume(parse(url).pathname).equals('/vt/lyrs=m@114&hl=en&src=api&x=2&y=2&z=3&s=');
+    assume(parsed.port).equals('');
+    assume(parsed.username).equals('');
+    assume(parsed.password).equals('');
+    assume(parsed.pathname).equals('/');
+    assume(parsed.host).equals('example.com');
+    assume(parsed.hostname).equals('example.com');
+    assume(parsed.href).equals('http://example.com/');
+  });
+
+  it('does not care about spaces', function () {
+    var url = 'http://x.com/path?that\'s#all, folks'
+      , parsed = parse(url);
+
+    assume(parsed.port).equals('');
+    assume(parsed.username).equals('');
+    assume(parsed.password).equals('');
+    assume(parsed.pathname).equals('/path');
+    assume(parsed.hash).equal('#all, folks');
+    assume(parsed.query).equal('?that\'s');
+    assume(parsed.host).equals('x.com');
+    assume(parsed.hostname).equals('x.com');
+  });
+
+  it('accepts + in the url', function () {
+    var url = 'http://x.y.com+a/b/c'
+      , parsed = parse(url);
+
+    assume(parsed.protocol).equals('http:');
+    assume(parsed.host).equals('x.y.com+a');
+    assume(parsed.hostname).equals('x.y.com+a');
+    assume(parsed.pathname).equals('/b/c');
+  });
+
+  describe('ip', function () {
+    // coap://
+    //
+    it('parses ipv6', function () {
+      var url = 'http://[1080:0:0:0:8:800:200C:417A]:61616/foo/bar?q=z'
+        , parsed = parse(url);
+
+      assume(parsed.port).equals('61616');
+      assume(parsed.query).equals('?q=z');
+      assume(parsed.protocol).equals('http:');
+      assume(parsed.hostname).equals('[1080:0:0:0:8:800:200c:417a]');
+      assume(parsed.pathname).equals('/foo/bar');
+      assume(parsed.href).equals('http://[1080:0:0:0:8:800:200c:417a]:61616/foo/bar?q=z');
+    });
+
+    it('parses ipv6 with auth', function () {
+      var url = 'http://user:password@[3ffe:2a00:100:7031::1]:8080'
+        , parsed = parse(url);
+
+      assume(parsed.username).equals('user');
+      assume(parsed.password).equals('password');
+      assume(parsed.host).equals('[3ffe:2a00:100:7031::1]:8080');
+      assume(parsed.hostname).equals('[3ffe:2a00:100:7031::1]');
+      assume(parsed.href).equals(url);
+    });
+
+    it('parses ipv4', function () {
+      var url = 'http://222.148.142.13:61616/foo/bar?q=z'
+        , parsed = parse(url);
+
+      assume(parsed.port).equals('61616');
+      assume(parsed.query).equals('?q=z');
+      assume(parsed.protocol).equals('http:');
+      assume(parsed.hostname).equals('222.148.142.13');
+      assume(parsed.pathname).equals('/foo/bar');
+      assume(parsed.href).equals(url);
+    });
+  });
+
+  describe('auth', function () {
+    it('does not lowercase the USER:PASS', function () {
+      var url = 'HTTP://USER:PASS@EXAMPLE.COM'
+        , parsed = parse(url);
+
+      assume(parsed.username).equals('USER');
+      assume(parsed.password).equals('PASS');
+      assume(parsed.protocol).equals('http:');
+      assume(parsed.host).equals('example.com');
+      assume(parsed.hostname).equals('example.com');
+    });
+
+    it('accepts @ in pathnames', function () {
+      var url = 'http://mt0.google.com/vt/lyrs=m@114&hl=en&src=api&x=2&y=2&z=3&s='
+        , parsed = parse(url);
+
+      assume(parsed.pathname).equals('/vt/lyrs=m@114&hl=en&src=api&x=2&y=2&z=3&s=');
+      assume(parsed.username).equals('');
+      assume(parsed.password).equals('');
+    });
+
+    it('does not require passwords for auth', function () {
+      var url = 'http://user@www.example.com/'
+        , parsed = parse(url);
+
+      assume(parsed.password).equals('');
+      assume(parsed.pathname).equals('/');
+      assume(parsed.username).equals('user');
+      assume(parsed.protocol).equals('http:');
+      assume(parsed.hostname).equals('www.example.com');
+    });
   });
 
   it('accepts multiple ???', function () {
@@ -161,7 +257,8 @@ describe('url-parse', function () {
     });
 
     it('does not inherit auth from source object', function () {
-      var data = parse('/foo', parse('http://foo:bar@sub.example.com'));
+      var from = parse('http://foo:bar@sub.example.com')
+        , data = parse('/foo', from);
 
       assume(data.port).equals('');
       assume(data.username).equals('');
