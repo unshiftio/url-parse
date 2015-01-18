@@ -96,7 +96,13 @@ function URL(address, location, parser) {
 
     url[key] = url[key] || (instruction[3] || ('port' === key && relative) ? location[key] || '' : '');
 
-    if (instruction[4]) url[key] = url[key].toLowerCase();
+    //
+    // Hostname, host and protocol should be lowercased so they can be used to
+    // create a proper `origin`.
+    //
+    if (instruction[4]) {
+      url[key] = url[key].toLowerCase();
+    }
   }
 
   //
@@ -123,6 +129,8 @@ function URL(address, location, parser) {
     instruction = url.auth.split(':');
     url.username = instruction[0];
     url.password = instruction[1];
+  } else {
+    url.username = url.password = '';
   }
 
   //
