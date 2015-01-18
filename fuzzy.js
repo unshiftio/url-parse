@@ -1,7 +1,7 @@
 'use strict';
 
 var URL = require('./')
-  , url = new URL();
+  , url = new URL('');
 
 /**
  * A dictionary with all kind of different options that should generate a valid
