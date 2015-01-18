@@ -161,7 +161,8 @@ describe('url-parse', function () {
     });
 
     it('does not inherit auth from source object', function () {
-      var data = parse('/foo', parse('http://foo:bar@sub.example.com'));
+      var from = parse('http://foo:bar@sub.example.com')
+        , data = parse('/foo', from);
 
       assume(data.port).equals('');
       assume(data.username).equals('');
