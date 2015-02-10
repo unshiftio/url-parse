@@ -4,9 +4,11 @@
   "description": "Parse URL in node using the URL module and in the browser using the DOM",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec --ui bdd ./test.js",
-    "coverage": "istanbul cover ./node_modules/.bin/_mocha -- --reporter spec --ui bdd ./test.js",
-    "test-travis": "istanbul cover node_modules/.bin/_mocha --report lcovonly -- --reporter spec --ui bdd ./test.js",
+    "100%": "istanbul check-coverage --statements 100 --functions 100 --lines 100 --branches 100",
+    "test": "mocha test.js",
+    "watch": "mocha --watch test.js",
+    "coverage": "istanbul cover ./node_modules/.bin/_mocha -- test.js",
+    "test-travis": "istanbul cover node_modules/.bin/_mocha --report lcovonly -- test.js",
     "browserify": "mkdir -p dist && browserify index.js -o dist/url-parse.js --standalone URLParse",
     "phantomjs": "mochify --reporter spec --ui bdd ./test.js",
     "testling": "testling -u"
@@ -25,12 +27,12 @@
   "author": "Arnout Kazemier",
   "license": "MIT",
   "devDependencies": {
-    "assume": "1.0.x",
+    "assume": "1.1.x",
     "browserify": "8.1.x",
     "istanbul": "0.3.x",
     "mocha": "2.1.x",
-    "mochify": "2.1.x",
-    "pre-commit": "0.0.x",
+    "mochify": "2.4.x",
+    "pre-commit": "1.0.x",
     "testling": "1.7.x"
   },
   "testling": {
