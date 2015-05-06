@@ -197,7 +197,11 @@ URL.prototype.toString = function toString(stringify) {
     , url = this
     , result = url.protocol +'//';
 
-  if (url.username) result += url.username +':'+ url.password +'@';
+  if (url.username) {
+    result += url.username;
+    if (url.password) result += ':'+ url.password;
+    result += '@';
+  }
 
   result += url.hostname;
   if (url.port) result += ':'+ url.port;

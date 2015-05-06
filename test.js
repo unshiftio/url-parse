@@ -197,6 +197,7 @@ describe('url-parse', function () {
       assume(parsed.username).equals('user');
       assume(parsed.protocol).equals('http:');
       assume(parsed.hostname).equals('www.example.com');
+      assume(parsed.href).equals(url);
     });
   });
 
