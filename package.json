@@ -27,11 +27,11 @@
   "author": "Arnout Kazemier",
   "license": "MIT",
   "devDependencies": {
-    "assume": "1.1.x",
-    "browserify": "8.1.x",
+    "assume": "1.2.x",
+    "browserify": "10.1.x",
     "istanbul": "0.3.x",
-    "mocha": "2.1.x",
-    "mochify": "2.4.x",
+    "mocha": "2.2.x",
+    "mochify": "2.8.x",
     "pre-commit": "1.0.x",
     "testling": "1.7.x"
   },
