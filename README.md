@@ -57,15 +57,16 @@ var parse = require('url-parse')
 
 The returned `url` instance contains the following properties:
 
-- `protocol`: Without slashes `http:`.
+- `protocol`: Requested protocol without slashes (e.g. `http:`).
 - `username`: Username of basic authentication.
 - `password`: Password of basic authentication.
+- `auth`: Authentication information portion (e.g. `username:password`).
 - `host`: Host name with port number.
 - `hostname`: Host name without port number.
 - `port`: Optional port number.
 - `pathname`: URL path.
 - `query`: Parsed object containing query string, unless parsing is set to false.
-- `hash`: Prefixed with `#`
+- `hash`: The "fragment" portion of the URL including the pound-sign (`#`).
 - `href`: The full URL.
 
 ### URL.set(key, value)
