@@ -151,7 +151,10 @@ URL.prototype.set = function set(part, value, fn) {
   var url = this;
 
   if ('query' === part) {
-    if ('string' === typeof value) value = (fn || qs.parse)(value);
+    if ('string' === typeof value && value.length) {
+      value = (fn || qs.parse)(value);
+    }
+
     url[part] = value;
   } else if ('port' === part) {
     url[part] = value;

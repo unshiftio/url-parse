@@ -279,6 +279,15 @@ describe('url-parse', function () {
       assume(data.href).equals('http://google.com:8080/foo');
     });
 
+    it('removes querystring and hash', function () {
+      var data = parse('https://thisanurl.com/?swag=yolo#representing');
+
+      data.set('query', '');
+      data.set('hash', '');
+
+      assume(data.href).equals('https://thisanurl.com/');
+    });
+
     it('only sets port when its not default', function () {
       var data = parse('http://google.com/foo');
 
