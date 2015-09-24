@@ -110,7 +110,7 @@ function URL(address, location, parser) {
   // with a custom parser as function use that instead of the default build-in
   // parser.
   //
-  if (parser) url.query = parser(url.query);
+  if (parser && url.query) url.query = parser(url.query);
 
   //
   // We should not add port numbers if they are already the default port number
