@@ -66,7 +66,7 @@ function URL(address, location, parser) {
     location = null;
   }
 
-  if (parser && 'function' !== typeof parser) {
+  if (!parser || 'function' !== typeof parser) {
     parser = qs.parse;
   }
 
