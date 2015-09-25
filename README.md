@@ -1,9 +1,9 @@
 # url-parse
 [![Made by unshift](https://img.shields.io/badge/made%20by-unshift-00ffcc.svg?style=flat-square)](http://unshift.io)[![Version npm](http://img.shields.io/npm/v/url-parse.svg?style=flat-square)](http://browsenpm.org/package/url-parse)[![Build Status](http://img.shields.io/travis/unshiftio/url-parse/master.svg?style=flat-square)](https://travis-ci.org/unshiftio/url-parse)[![Dependencies](https://img.shields.io/david/unshiftio/url-parse.svg?style=flat-square)](https://david-dm.org/unshiftio/url-parse)[![Coverage Status](http://img.shields.io/coveralls/unshiftio/url-parse/master.svg?style=flat-square)](https://coveralls.io/r/unshiftio/url-parse?branch=master)[![IRC channel](http://img.shields.io/badge/IRC-irc.freenode.net%23unshift-00a8ff.svg?style=flat-square)](http://webchat.freenode.net/?channels=unshift)
 
-The `url-parse` method exposes two different API interfaces. The [`url` interface
-that you know from Node.js](https://nodejs.org/api/url.html) and the [new `URL` interface that is available in the
-latest browsers](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL).
+The `url-parse` method exposes two different API interfaces. The [`url`](https://nodejs.org/api/url.html) interface
+that you know from Node.js and the new [`URL`](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL) interface that is available in the
+latest browsers.
 
 Since `0.1` we've moved away from using the DOM's `<a>` element for URL parsing
 and moving to a full Regular Expression solution. The main reason for this
