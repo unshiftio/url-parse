@@ -24,6 +24,12 @@ describe('url-parse', function () {
     assume(data.query.foo).equals('bar');
   });
 
+  it('does not add question mark to href if query string empty', function () {
+    var url = 'http://google.com/'
+      , data = parse(url, true);
+    assume(data.href).equals(url);
+  });
+
   it('allows a custom function as parser', function () {
     var url = 'http://google.com/?foo=bar'
       , data = parse(url, function () { return '1337'; });
