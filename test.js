@@ -27,6 +27,7 @@ describe('url-parse', function () {
   it('does not add question mark to href if query string empty', function () {
     var url = 'http://google.com/'
       , data = parse(url, true);
+
     assume(data.href).equals(url);
   });
 

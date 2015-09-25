@@ -1,6 +1,6 @@
 {
   "name": "url-parse",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Small footprint URL parser that works seamlessly across Node.js and browser environments",
   "main": "index.js",
   "scripts": {
@@ -27,12 +27,12 @@
   "author": "Arnout Kazemier",
   "license": "MIT",
   "devDependencies": {
-    "assume": "1.2.x",
-    "browserify": "10.1.x",
+    "assume": "1.3.x",
+    "browserify": "11.2.x",
     "istanbul": "0.3.x",
     "mocha": "2.2.x",
-    "mochify": "2.8.x",
-    "pre-commit": "1.0.x",
+    "mochify": "2.13.x",
+    "pre-commit": "1.1.x",
     "testling": "1.7.x"
   },
   "testling": {
