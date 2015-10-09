@@ -16,15 +16,21 @@ describe('url-parse', function () {
     assume(parse.location).equals(require('./lolcation'));
   });
 
-  it('parsers the query string', function () {
+  it('parses the query string into an object', function () {
     var url = 'http://google.com/?foo=bar'
       , data = parse(url, true);
 
     assume(data.query).is.a('object');
     assume(data.query.foo).equals('bar');
+
+    url = 'http://google.com/';
+    data = parse(url, true);
+
+    assume(data.query).is.a('object');
+    assume(data.query).is.empty();
   });
 
-  it('does not add question mark to href if query string empty', function () {
+  it('does not add question mark to href if query string is empty', function () {
     var url = 'http://google.com/'
       , data = parse(url, true);
 
@@ -55,8 +61,19 @@ describe('url-parse', function () {
   });
 
   it('is blob: location aware', function () {
-    var blob = {"hash":"","search":"","pathname":"https%3A//gist.github.com/3f272586-6dac-4e29-92d0-f674f2dde618","port":"","hostname":"","host":"","protocol":"blob:","origin":"https://gist.github.com","href":"blob:https%3A//gist.github.com/3f272586-6dac-4e29-92d0-f674f2dde618"}
-      , url = '/unshiftio/url-parse'
+    var blob = {
+      'href': 'blob:https%3A//gist.github.com/3f272586-6dac-4e29-92d0-f674f2dde618',
+      'pathname': 'https%3A//gist.github.com/3f272586-6dac-4e29-92d0-f674f2dde618',
+      'origin': 'https://gist.github.com',
+      'protocol': 'blob:',
+      'hostname': '',
+      'search': '',
+      'hash': '',
+      'host': '',
+      'port': ''
+    };
+
+    var url = '/unshiftio/url-parse'
       , data = parse(url, blob);
 
     assume(data.href).equals('https://gist.github.com/unshiftio/url-parse');
