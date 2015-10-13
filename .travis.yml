@@ -1,16 +1,26 @@
 sudo: false
 language: node_js
-node_js:
-  - "4"
-  - "3"
-  - "2"
-  - "1"
-  - "0.12"
-  - "0.10"
+matrix:
+  fast_finish: true
+  include:
+    - node_js: "0.10"
+      env: TASK=test-node
+    - node_js: "0.12"
+      env: TASK=test-node
+    - node_js: "iojs"
+      env: TASK=test-node
+    - node_js: "4"
+      env: TASK=test-node
+    - node_js: "4"
+      env: TASK=test-browser
+env:
+  global:
+    - secure: cllftX7C9MfvME/iHOUtIk/82ZDs09cwqYSZXkpJ7p5eydzTlA5i+eBkHj+8SJi24ry8VZAz/7UB5pCuUE0bb5co8bsj1EIYaDCz/NLBUZgrQki0/2/XGEDK4WTHnE85GwYw0tP71MST0Jb3fZ/euCh3Mg+5+V0SfOfxsl8vg1A=
+    - secure: OssfBkDM5YiFqrxXQeSXo43bJHIj0Sw/kT4q9QWxJWubvyV+1anUhSlIR6Rd46ObIsXU59tVcLQ5m6qsr/57l486HFpAUWgbIRMYWqjW9eX4o4L94uMJmV7x142ASJE9TYHySGkSBH9cuDZSEvP98EEYX9NQKyRUGic6b/tGR4Y=
 script:
-  - "npm run test-travis"
+  - "npm run ${TASK}"
 after_script:
-  - "npm install coveralls@2 && cat coverage/lcov.info | coveralls"
+  - 'if [ "${TASK}" == "test-node" ]; then npm i coveralls@2 && cat coverage/lcov.info | coveralls; fi'
 notifications:
   irc:
     channels:
