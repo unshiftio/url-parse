@@ -15,8 +15,8 @@ matrix:
       env: TASK=test-browser
 env:
   global:
-    - secure: cllftX7C9MfvME/iHOUtIk/82ZDs09cwqYSZXkpJ7p5eydzTlA5i+eBkHj+8SJi24ry8VZAz/7UB5pCuUE0bb5co8bsj1EIYaDCz/NLBUZgrQki0/2/XGEDK4WTHnE85GwYw0tP71MST0Jb3fZ/euCh3Mg+5+V0SfOfxsl8vg1A=
-    - secure: OssfBkDM5YiFqrxXQeSXo43bJHIj0Sw/kT4q9QWxJWubvyV+1anUhSlIR6Rd46ObIsXU59tVcLQ5m6qsr/57l486HFpAUWgbIRMYWqjW9eX4o4L94uMJmV7x142ASJE9TYHySGkSBH9cuDZSEvP98EEYX9NQKyRUGic6b/tGR4Y=
+    - secure: edovUXd/s/VAVXTor0CT1XcGqAtBwGgLYN1zYq0JcNiJUgWFiZ5VGKYbKVpb6nKlwm0Fdi1xmByguSa6xLZllcXjtDgfXrkI1cQYmoVncJ63JpXNG+UKyy43BwnF2OqgUrAAOt/ic1YJr9kBe+IaRwDUsMxxIkuJ6Z8c4diX0HE=
+    - secure: IF01oyIKSs0C5dARdYRTilKnU1TG4zenjjEPClkQxAWIpUOxl9xcNJWDVEOPxJ/4pVt+pozyT80Rp7efh6ZiREJIQI1tUboBKSqZzSbnD5uViQNSbQ90PaDP0FIUc0IQ5o07W36rijBB0DTmtU1VofzN9PKkJO7XiSSXevI8RcM=
 script:
   - "npm run ${TASK}"
 after_script:
