@@ -12,14 +12,59 @@ var URL = require('./')
  */
 var combinations = {};
 
-combinations.protocol = ['http:', 'https:', 'ws:', 'wss:', 'blob:'/*, ''*/];
+combinations.protocol = [
+  'http:',
+  'https:',
+  'ws:',
+  'wss:',
+  'blob:'/*,
+  ''*/
+];
 combinations.username = ['foo', 'bar'];
 combinations.password = combinations.username;
-combinations.hostname = ['example.com', 'www.example.com', 'travel.travel', 'sub.sub.sub.domain.nl', 'xn--n3h.com', 'localhost', '127.0.0.1', '255.255.255.255', /*'3ffe:6a88:85a3:08d3:1319:8a2e:0370:7344', '2001:2353::1428:57ab', '2001:2353:0::0:1428:57ab', '2001:2353:0:0:0:0:1428:57ab', '2001:2353:0000:0000:0000::1428:57ab', '2001:2353:0000:0000:0000:0000:1428:57ab', '2001:2353:02de::0e13', '2001:2353:2de::e13'*/];
+combinations.hostname = [
+  'example.com',
+  'www.example.com',
+  'travel.travel',
+  'sub.sub.sub.domain.nl',
+  'xn--n3h.com',
+  'localhost',
+  '127.0.0.1',
+  '255.255.255.255'/*,
+  '3ffe:6a88:85a3:08d3:1319:8a2e:0370:7344',
+  '2001:2353::1428:57ab',
+  '2001:2353:0::0:1428:57ab',
+  '2001:2353:0:0:0:0:1428:57ab',
+  '2001:2353:0000:0000:0000::1428:57ab',
+  '2001:2353:0000:0000:0000:0000:1428:57ab',
+  '2001:2353:02de::0e13',
+  '2001:2353:2de::e13'*/
+];
 combinations.port = ['8080', '844', '3340'];
-combinations.pathname = ['/', '/bar', '/bar/', '/foo/bar', '/foo.bar/foo', '/fav.ico', '/@3rd-Eden', '/a/b/c/d/e/f/g/j/1/d/4/'];
-combinations.query = ['foo=bar', 'foo[]=bar&foo[]=foo', 'email=foo@bar.travel', 'q='];
-combinations.hash = ['name', 'moo-with-longer-name', '/what/about/slashes?querystring', '?querystring', '!/google/urls', 'use:foo@', 'http://'];
+combinations.pathname = [
+  '/',
+  '/bar',
+  '/bar/',
+  '/foo/bar',
+  '/foo.bar/foo',
+  '/fav.ico',
+  '/@3rd-Eden',
+  '/a/b/c/d/e/f/g/j/1/d/4/'
+];
+combinations.query = ['foo=bar',
+  'foo[]=bar&foo[]=foo',
+  'email=foo@bar.travel',
+  'q='
+];
+combinations.hash = [
+  'name',
+  'moo-with-longer-name',
+  '/what/about/slashes?querystring',
+  '?querystring',
+  '!/google/urls',
+  'use:foo@',
+  'http://'
+];
 
 /**
  * Get a random item from the given array.
