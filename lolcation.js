@@ -19,7 +19,7 @@ var ignore = { hash: 1, query: 1 }
  * encoded in the `pathname` so we can thankfully generate a good "default"
  * location from it so we can generate proper relative URL's again.
  *
- * @param {Object} loc Optional default location object.
+ * @param {Object|String} loc Optional default location object.
  * @returns {Object} lolcation object.
  * @api public
  */
