@@ -35,8 +35,8 @@ var instructions = [
  *
  * @constructor
  * @param {String} address URL we want to parse.
- * @param {Boolean|function} parser Parser for the query string.
- * @param {Object} location Location defaults for relative paths.
+ * @param {Object|String} location Location defaults for relative paths.
+ * @param {Boolean|Function} parser Parser for the query string.
  * @api public
  */
 function URL(address, location, parser) {
