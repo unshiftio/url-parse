@@ -24,7 +24,7 @@ In addition to URL parsing we also expose the bundled `querystringify` module.
 
 ## Installation
 
-This module is designed to be used using either browserify or node.js it's
+This module is designed to be used using either browserify or Node.js it's
 released in the public npm registry and can be installed using:
 
 ```
@@ -42,7 +42,7 @@ var URL = require('url-parse');
 ```
 
 To parse an URL simply call the `URL` method with the URL that needs to be
-transformed in to an object.
+transformed into an object.
 
 ```js
 var url = new URL('https://github.com/foo/bar');
@@ -53,16 +53,16 @@ The constructor takes the following arguments:
 
 - `url` (`String`): A string representing an absolute or relative URL.
 - `baseURL` (`Object` | `String`): An object or string representing
-  the base URL to use in case `address` is a relative URL. This argument is
+  the base URL to use in case `url` is a relative URL. This argument is
   optional and defaults to [`location`](https://developer.mozilla.org/en-US/docs/Web/API/Location)
   in the browser.
 - `parser` (`Boolean` | `Function`): This argument is optional and specifies
   how to parse the query string. By default it is `false` so the query string
   is not parsed. If you pass `true` the query string is parsed using the
   embedded `querystringify` module. If you pass a function the query string
-  wull be parsed using this function.
+  will be parsed using this function.
 
-As said above we also support the node.js interface. So you can also use the
+As said above we also support the Node.js interface so you can also use the
 library in this way:
 
 ```js
@@ -122,7 +122,7 @@ will automatically update.
 
 The testing of this module is done in 3 different ways:
 
-1. We have unit tests that run under Node.js. You can run these test with the
+1. We have unit tests that run under Node.js. You can run these tests with the
   `npm test` command.
 2. Code coverage can be run manually using `npm run coverage`.
 3. For browser testing we use Sauce Labs and `zuul`. You can run browser tests
