@@ -1,3 +1,5 @@
+coverage/
+dist/
 fuzzy.js
 test.js
 .*

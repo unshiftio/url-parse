@@ -1,6 +1,5 @@
-node_modules
-coverage
-.tern-port
-browserified.js
+node_modules/
+coverage/
+dist/
 npm-debug.log
-dist
+.tern-port
