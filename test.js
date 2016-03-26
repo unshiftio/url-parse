@@ -388,6 +388,20 @@ describe('url-parse', function () {
     });
   });
 
+  it('correctly adds ":" to protocol in final url string', function () {
+    var data = parse('google.com/foo');
+    data.set('protocol', 'https');
+    assume(data.href).equals('https://google.com/foo');
+
+    data = parse('https://google.com/foo');
+    data.protocol = 'http';
+    assume(data.toString()).equals('http://google.com/foo');
+
+    var data = parse('http://google.com/foo');
+    data.set('protocol', 'https:');
+    assume(data.href).equals('https://google.com/foo');
+  });
+
   describe('fuzzy', function () {
     var fuzz = require('./fuzzy')
       , times = 10;
