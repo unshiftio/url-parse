@@ -34,7 +34,7 @@
     "requires-port": "1.0.x"
   },
   "devDependencies": {
-    "assume": "1.3.x",
+    "assume": "1.4.x",
     "browserify": "13.0.x",
     "istanbul": "0.4.x",
     "mocha": "2.3.x",
