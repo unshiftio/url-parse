@@ -398,7 +398,7 @@ describe('url-parse', function () {
     it('throws error when updating query, if custom parser is not a function', function() {
        var data = parse('http://google.com/?foo=bar');
 
-      assume(function () { return data.set('query', 'bar=foo', '1337'); }).throws('parser');
+      assume(function () { return data.set('query', 'bar=foo', '1337'); }).throws('not a function');
 
       // data is unchanged
       assume(data.href).equals('http://google.com/?foo=bar');

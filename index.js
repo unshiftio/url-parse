@@ -28,10 +28,21 @@ var instructions = [
   [NaN, 'hostname', undefined, 1, 1]    // Set left over.
 ];
 
-/**
- * Extract protocol information from a URL
- * Correctly extracts protocols with/without double slash ("//");
+ /**
+ * @typedef ProtocolExtract
+ * @type Object
+ * @property {String} protocol Protocol matched in the URL, in lowercase
+ * @property {Boolean} slashes Indicates whether the protocol is followed by double slash ("//")
+ * @property {String} rest     Rest of the URL that is not part of the protocol
  */
+
+ /**
+  * Extract protocol information from a URL with/without double slash ("//")
+  *
+  * @param  {String} address   URL we want to extract from.
+  * @return {ProtocolExtract}  Extracted information
+  * @private
+  */
 function extractProtocol(address) {
   var match = protocolre.exec(address);
   return {
@@ -161,25 +172,21 @@ function URL(address, location, parser) {
  * This is convenience method for changing properties in the URL instance to
  * insure that they all propagate correctly.
  *
- * @param {String} prop Property we need to adjust.
- * @param {Mixed} value The newly assigned value.
- * @param {Boolean|Function} fnOrNoSlashes When setting the query, it will be the
- *                                         function used to parse the query.
- *                                         When setting the protocol, double slash will
- *                                         be removed from the final url if it is true.
+ * @param {String} prop          Property we need to adjust.
+ * @param {Mixed} value          The newly assigned value.
+ * @param {Boolean|Function} fn  When setting the query, it will be the function used to parse
+ *                               the query.
+ *                               When setting the protocol, double slash will be removed from
+ *                               the final url if it is true.
  * @returns {URL}
  * @api public
  */
-URL.prototype.set = function set(part, value, fnOrNoSlashes) {
+URL.prototype.set = function set(part, value, fn) {
   var url = this;
 
   if ('query' === part) {
-    if (fnOrNoSlashes && 'function' !== typeof fnOrNoSlashes) {
-      throw new TypeError('Custom parser must be a function');
-    }
-
     if ('string' === typeof value && value.length) {
-      value = (fnOrNoSlashes || qs.parse)(value);
+      value = (fn || qs.parse)(value);
     }
 
     url[part] = value;
@@ -207,7 +214,7 @@ URL.prototype.set = function set(part, value, fnOrNoSlashes) {
     }
   } else if ('protocol' === part) {
     url.protocol = value;
-    url.slashes = !fnOrNoSlashes;
+    url.slashes = !fn;
   } else {
     url[part] = value;
   }
