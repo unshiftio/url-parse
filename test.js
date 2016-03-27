@@ -398,15 +398,14 @@ describe('url-parse', function () {
     it('throws error when updating query, if custom parser is not a function', function() {
       var data = parse('http://google.com/?foo=bar');
 
-      try {
+      assume(function () {
         data.set('query', 'bar=foo', '1337');
-      } catch (e) {
-        // data is unchanged
-        assume(data.href).equals('http://google.com/?foo=bar');
-        return;
-      }
+      }).throws(Error);
 
-      throw new Error('Test invalidation');
+      //
+      // `data` is unchanged.
+      //
+      assume(data.href).equals('http://google.com/?foo=bar');
     });
 
     it('updates the port when updating host', function () {
