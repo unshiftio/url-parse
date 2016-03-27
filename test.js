@@ -177,7 +177,7 @@ describe('url-parse', function () {
       data.protocol = 'http';
       assume(data.toString()).equals('http://google.com/foo');
 
-      var data = parse('http://google.com/foo');
+      data = parse('http://google.com/foo');
       data.set('protocol', 'https:');
       assume(data.href).equals('https://google.com/foo');
     });
@@ -386,7 +386,7 @@ describe('url-parse', function () {
     });
 
     it('allows custom parser when updating query', function() {
-       var data = parse('http://google.com/?foo=bar');
+      var data = parse('http://google.com/?foo=bar');
 
       assume(data.set('query', 'bar=foo', function () { return '1337'; })).equals(data);
 
@@ -396,12 +396,17 @@ describe('url-parse', function () {
     });
 
     it('throws error when updating query, if custom parser is not a function', function() {
-       var data = parse('http://google.com/?foo=bar');
+      var data = parse('http://google.com/?foo=bar');
 
-      assume(function () { return data.set('query', 'bar=foo', '1337'); }).throws('not a function');
+      try {
+        data.set('query', 'bar=foo', '1337');
+      } catch (e) {
+        // data is unchanged
+        assume(data.href).equals('http://google.com/?foo=bar');
+        return;
+      }
 
-      // data is unchanged
-      assume(data.href).equals('http://google.com/?foo=bar');
+      throw new Error('Test invalidation');
     });
 
     it('updates the port when updating host', function () {
