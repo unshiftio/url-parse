@@ -79,12 +79,6 @@ describe('url-parse', function () {
     assume(data.href).equals('https://gist.github.com/unshiftio/url-parse');
   });
 
-  it('converts protocol to lowercase', function () {
-    var url = 'HTTP://example.com';
-
-    assume(parse(url).protocol).equals('http:');
-  });
-
   it('can parse complex urls multiple times without errors', function () {
     var url = 'https://www.mozilla.org/en-US/firefox/34.0/whatsnew/?oldversion=33.1';
 
@@ -150,6 +144,43 @@ describe('url-parse', function () {
     assume(parsed.host).equals('x.y.com+a');
     assume(parsed.hostname).equals('x.y.com+a');
     assume(parsed.pathname).equals('/b/c');
+  });
+
+  describe('protocol', function() {
+    it('extracts the right protocol from a url', function() {
+      var testData = [
+        { url: 'http://example.com', protocol: 'http:' },
+        { url: 'mailto:test@example.com', protocol: 'mailto:' },
+        { url: 'data:text/html,%3Ch1%3EHello%2C%20World!%3C%2Fh1%3E', protocol: 'data:' },
+        { url: 'sip:alice@atlanta.com', protocol: 'sip:' }
+      ];
+
+      var data;
+      for (var i = 0, len = testData.length; i < len; ++i) {
+        data = testData[i];
+        assume(parse(data.url).protocol).equals(data.protocol);
+      }
+    });
+
+    it('converts protocol to lowercase', function () {
+      var url = 'HTTP://example.com';
+
+      assume(parse(url).protocol).equals('http:');
+    });
+
+    it('correctly adds ":" to protocol in final url string', function () {
+      var data = parse('google.com/foo');
+      data.set('protocol', 'https');
+      assume(data.href).equals('https://google.com/foo');
+
+      data = parse('https://google.com/foo');
+      data.protocol = 'http';
+      assume(data.toString()).equals('http://google.com/foo');
+
+      var data = parse('http://google.com/foo');
+      data.set('protocol', 'https:');
+      assume(data.href).equals('https://google.com/foo');
+    });
   });
 
   describe('ip', function () {
@@ -354,6 +385,25 @@ describe('url-parse', function () {
       assume(data.href).equals('http://google.com/?baz=foo');
     });
 
+    it('allows custom parser when updating query', function() {
+       var data = parse('http://google.com/?foo=bar');
+
+      assume(data.set('query', 'bar=foo', function () { return '1337'; })).equals(data);
+
+      assume(data.query).equals('1337');
+
+      assume(data.href).equals('http://google.com/?1337');
+    });
+
+    it('throws error when updating query, if custom parser is not a function', function() {
+       var data = parse('http://google.com/?foo=bar');
+
+      assume(function () { return data.set('query', 'bar=foo', '1337'); }).throws('parser');
+
+      // data is unchanged
+      assume(data.href).equals('http://google.com/?foo=bar');
+    });
+
     it('updates the port when updating host', function () {
       var data = parse('http://google.com/?foo=bar');
 
@@ -378,6 +428,18 @@ describe('url-parse', function () {
       assume(data.href).equals('http://yahoo.com:808/?foo=bar');
     });
 
+    it('updates slashes when updating protocol', function() {
+      var data = parse('sip:alice@atlanta.com');
+
+      assume(data.set('protocol', 'https')).equals(data);
+
+      assume(data.href).equals('https://alice@atlanta.com');
+
+      assume(data.set('protocol', 'mailto', true)).equals(data);
+
+      assume(data.href).equals('mailto:alice@atlanta.com');
+    });
+
     it('updates other values', function () {
       var data = parse('http://google.com/?foo=bar');
 
@@ -386,20 +448,6 @@ describe('url-parse', function () {
 
       assume(data.href).equals('https://google.com/?foo=bar');
     });
-  });
-
-  it('correctly adds ":" to protocol in final url string', function () {
-    var data = parse('google.com/foo');
-    data.set('protocol', 'https');
-    assume(data.href).equals('https://google.com/foo');
-
-    data = parse('https://google.com/foo');
-    data.protocol = 'http';
-    assume(data.toString()).equals('http://google.com/foo');
-
-    var data = parse('http://google.com/foo');
-    data.set('protocol', 'https:');
-    assume(data.href).equals('https://google.com/foo');
   });
 
   describe('fuzzy', function () {

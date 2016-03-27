@@ -3,7 +3,8 @@
 var required = require('requires-port')
   , lolcation = require('./lolcation')
   , qs = require('querystringify')
-  , relativere = /^\/(?!\/)/;
+  , relativere = /^\/(?!\/)/
+  , protocolre = /^([a-z0-9.+-]+:)?(\/\/)?(.*)$/i; // actual protocol is first match
 
 /**
  * These are the parse instructions for the URL parsers, it informs the parser
@@ -20,13 +21,25 @@ var required = require('requires-port')
 var instructions = [
   ['#', 'hash'],                        // Extract from the back.
   ['?', 'query'],                       // Extract from the back.
-  ['//', 'protocol', 2, 1, 1],          // Extract from the front.
   ['/', 'pathname'],                    // Extract from the back.
   ['@', 'auth', 1],                     // Extract from the front.
   [NaN, 'host', undefined, 1, 1],       // Set left over value.
   [/\:(\d+)$/, 'port'],                 // RegExp the back.
   [NaN, 'hostname', undefined, 1, 1]    // Set left over.
 ];
+
+/**
+ * Extract protocol information from a URL
+ * Correctly extracts protocols with/without double slash ("//");
+ */
+function extractProtocol(address) {
+  var match = protocolre.exec(address);
+  return {
+    protocol: match[1] ? match[1].toLowerCase() : '',
+    slashes: !!match[2],
+    rest: match[3] ? match[3] : ''
+  };
+}
 
 /**
  * The actual URL instance. Instead of returning an object we've opted-in to
@@ -71,6 +84,12 @@ function URL(address, location, parser) {
   }
 
   location = lolcation(location);
+
+  // extract protocol information before running the instructions
+  var extracted = extractProtocol(address);
+  url.protocol = extracted.protocol || location.protocol || '';
+  url.slashes = extracted.slashes || location.slashes;
+  address = extracted.rest;
 
   for (; i < instructions.length; i++) {
     instruction = instructions[i];
@@ -144,15 +163,23 @@ function URL(address, location, parser) {
  *
  * @param {String} prop Property we need to adjust.
  * @param {Mixed} value The newly assigned value.
+ * @param {Boolean|Function} fnOrNoSlashes When setting the query, it will be the
+ *                                         function used to parse the query.
+ *                                         When setting the protocol, double slash will
+ *                                         be removed from the final url if it is true.
  * @returns {URL}
  * @api public
  */
-URL.prototype.set = function set(part, value, fn) {
+URL.prototype.set = function set(part, value, fnOrNoSlashes) {
   var url = this;
 
   if ('query' === part) {
+    if (fnOrNoSlashes && 'function' !== typeof fnOrNoSlashes) {
+      throw new TypeError('Custom parser must be a function');
+    }
+
     if ('string' === typeof value && value.length) {
-      value = (fn || qs.parse)(value);
+      value = (fnOrNoSlashes || qs.parse)(value);
     }
 
     url[part] = value;
@@ -178,6 +205,9 @@ URL.prototype.set = function set(part, value, fn) {
       url.hostname = value[0];
       url.port = value[1];
     }
+  } else if ('protocol' === part) {
+    url.protocol = value;
+    url.slashes = !fnOrNoSlashes;
   } else {
     url[part] = value;
   }
@@ -202,7 +232,7 @@ URL.prototype.toString = function toString(stringify) {
 
   if (protocol && protocol.charAt(protocol.length - 1) !== ':') protocol += ':';
 
-  var result = protocol + '//';
+  var result = protocol + (url.slashes ? '//' : '');
 
   if (url.username) {
     result += url.username;
