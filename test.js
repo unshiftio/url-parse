@@ -452,6 +452,23 @@ describe('url-parse', function () {
 
       assume(data.href).equals('https://google.com/?foo=bar');
     });
+
+    it('preserves the slashes from a base location object', function () {
+      var base = {
+        search: "",
+        pathname: "/",
+        port: "1234",
+        hostname: "example.com",
+        host: "example.com:1234",
+        protocol: "http:",
+        origin: "http://example.com:1234",
+        href: "http://example.com:1234/",
+        ancestorOrigins: {},
+      };
+      var data = parse('/some/path', base);
+
+      assume(data.href).equals('http://example.com:1234/some/path');
+    });
   });
 
   describe('fuzzy', function () {

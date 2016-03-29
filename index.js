@@ -97,10 +97,11 @@ function URL(address, location, parser) {
   location = lolcation(location);
 
   // extract protocol information before running the instructions
-  var extracted = extractProtocol(address);
-  url.protocol = extracted.protocol || location.protocol || '';
-  url.slashes = extracted.slashes || location.slashes;
-  address = extracted.rest;
+  var extractedAddress = extractProtocol(address)
+    , extractedLocation = extractProtocol(location.href);
+  url.protocol = extractedAddress.protocol || extractedLocation.protocol || '';
+  url.slashes = extractedAddress.slashes || extractedLocation.slashes;
+  address = extractedAddress.rest;
 
   for (; i < instructions.length; i++) {
     instruction = instructions[i];
