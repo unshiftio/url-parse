@@ -1,8 +1,10 @@
 'use strict';
 
+var slashes = /^[A-Za-z][A-Za-z0-9+-.]*:\/\//;
+
 /**
  * These properties should not be copied or inherited from. This is only needed
- * for all non blob URL's as the a blob URL does not include a hash, only the
+ * for all non blob URL's as a blob URL does not include a hash, only the
  * origin.
  *
  * @type {Object}
@@ -36,9 +38,15 @@ module.exports = function lolcation(loc) {
   } else if ('string' === type) {
     finaldestination = new URL(loc, {});
     for (key in ignore) delete finaldestination[key];
-  } else if ('object' === type) for (key in loc) {
-    if (key in ignore) continue;
-    finaldestination[key] = loc[key];
+  } else if ('object' === type) {
+    for (key in loc) {
+      if (key in ignore) continue;
+      finaldestination[key] = loc[key];
+    }
+
+    if (finaldestination.slashes === undefined) {
+      finaldestination.slashes = slashes.test(loc.href);
+    }
   }
 
   return finaldestination;

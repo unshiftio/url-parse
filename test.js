@@ -278,13 +278,49 @@ describe('url-parse', function () {
       assume(data.href).equals('http://localhost');
     });
 
-    it('does inherit port numbers from relative urls', function () {
+    it('inherits port numbers for relative urls', function () {
       var data = parse('/foo', parse('http://sub.example.com:808/'));
 
       assume(data.port).equals('808');
       assume(data.hostname).equals('sub.example.com');
       assume(data.host).equals('sub.example.com:808');
       assume(data.href).equals('http://sub.example.com:808/foo');
+    });
+
+    it('inherits slashes for relative urls', function () {
+      var data = parse('/foo', {
+        hash: '',
+        host: 'example.com',
+        hostname: 'example.com',
+        href: 'http://example.com/',
+        origin: 'http://example.com',
+        password: '',
+        pathname: '/',
+        port: '',
+        protocol: 'http:',
+        search: ''
+      });
+
+      assume(data.slashes).equals(true);
+      assume(data.href).equals('http://example.com/foo');
+
+      data = parse('/foo', {
+        auth: null,
+        hash: null,
+        host: 'example.com',
+        hostname: 'example.com',
+        href: 'http://example.com/',
+        path: '/',
+        pathname: '/',
+        port: null,
+        protocol: 'http:',
+        query: null,
+        search: null,
+        slashes: true
+      });
+
+      assume(data.slashes).equals(true);
+      assume(data.href).equals('http://example.com/foo');
     });
 
     it('inherits protocol for relative protocols', function () {
