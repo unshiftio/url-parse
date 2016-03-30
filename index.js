@@ -45,6 +45,7 @@ var instructions = [
   */
 function extractProtocol(address) {
   var match = protocolre.exec(address);
+
   return {
     protocol: match[1] ? match[1].toLowerCase() : '',
     slashes: !!match[2],
@@ -72,6 +73,7 @@ function URL(address, location, parser) {
     , parse, instruction, index, key
     , type = typeof location
     , url = this
+    , extracted
     , i = 0;
 
   //
@@ -96,8 +98,10 @@ function URL(address, location, parser) {
 
   location = lolcation(location);
 
+  //
   // extract protocol information before running the instructions
-  var extracted = extractProtocol(address);
+  //
+  extracted = extractProtocol(address);
   url.protocol = extracted.protocol || location.protocol || '';
   url.slashes = extracted.slashes || location.slashes;
   address = extracted.rest;
@@ -266,4 +270,5 @@ URL.prototype.toString = function toString(stringify) {
 //
 URL.qs = qs;
 URL.location = lolcation;
+
 module.exports = URL;
