@@ -4,7 +4,7 @@ var required = require('requires-port')
   , lolcation = require('./lolcation')
   , qs = require('querystringify')
   , relativere = /^\/(?!\/)/
-  , protocolre = /^([a-z0-9.+-]+:)?(\/\/)?(.*)$/i; // actual protocol is first match
+  , protocolre = /^([a-z][a-z0-9.+-]*:)?(\/\/)?([\S\s]*)/i; // actual protocol is first match
 
 /**
  * These are the parse instructions for the URL parsers, it informs the parser
