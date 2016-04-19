@@ -16,6 +16,30 @@ describe('url-parse', function () {
     assume(parse.location).equals(require('./lolcation'));
   });
 
+  it('exposes the extractProtocol function', function () {
+    assume(parse.extractProtocol).is.a('function');
+  });
+
+  describe('extractProtocol', function () {
+    it('extracts the protocol data', function () {
+      assume(parse.extractProtocol('')).eql({
+        slashes: false,
+        protocol: '',
+        rest: ''
+      });
+    });
+
+    it('does not truncate the input string', function () {
+      var input = 'foo\nbar\rbaz\u2028qux\u2029';
+
+      assume(parse.extractProtocol(input)).eql({
+        slashes: false,
+        protocol: '',
+        rest: input
+      });
+    });
+  });
+
   it('parses the query string into an object', function () {
     var url = 'http://google.com/?foo=bar'
       , data = parse(url, true);

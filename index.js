@@ -4,7 +4,7 @@ var required = require('requires-port')
   , lolcation = require('./lolcation')
   , qs = require('querystringify')
   , relativere = /^\/(?!\/)/
-  , protocolre = /^([a-z][a-z0-9.+-]*:)?(\/\/)?([\S\s]*)/i; // actual protocol is first match
+  , protocolre = /^([a-z][a-z0-9.+-]*:)?(\/\/)?([\S\s]*)/i;
 
 /**
  * These are the parse instructions for the URL parsers, it informs the parser
@@ -41,7 +41,7 @@ var instructions = [
   *
   * @param  {String} address   URL we want to extract from.
   * @return {ProtocolExtract}  Extracted information
-  * @private
+  * @api private
   */
 function extractProtocol(address) {
   var match = protocolre.exec(address);
@@ -56,7 +56,7 @@ function extractProtocol(address) {
 /**
  * The actual URL instance. Instead of returning an object we've opted-in to
  * create an actual constructor as it's much more memory efficient and
- * faster and it pleases my CDO.
+ * faster and it pleases my OCD.
  *
  * @constructor
  * @param {String} address URL we want to parse.
@@ -176,7 +176,7 @@ function URL(address, location, parser) {
  * This is convenience method for changing properties in the URL instance to
  * insure that they all propagate correctly.
  *
- * @param {String} prop          Property we need to adjust.
+ * @param {String} part          Property we need to adjust.
  * @param {Mixed} value          The newly assigned value.
  * @param {Boolean|Function} fn  When setting the query, it will be the function used to parse
  *                               the query.
@@ -266,9 +266,10 @@ URL.prototype.toString = function toString(stringify) {
 
 //
 // Expose the URL parser and some additional properties that might be useful for
-// others.
+// others or testing.
 //
-URL.qs = qs;
+URL.extractProtocol = extractProtocol;
 URL.location = lolcation;
+URL.qs = qs;
 
 module.exports = URL;
