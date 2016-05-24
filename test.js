@@ -480,6 +480,28 @@ describe('url-parse', function () {
       assume(data.href).equals('http://yahoo.com:808/?foo=bar');
     });
 
+    it('ignores the port when missing from the host', function () {
+      var data = parse('http://google.com:808/?foo=bar');
+
+      assume(data.set('host', 'yahoo.com')).equals(data);
+      assume(data.hostname).equals('yahoo.com');
+      assume(data.host).equals('yahoo.com:808');
+      assume(data.port).equals('808');
+
+      assume(data.href).equals('http://yahoo.com:808/?foo=bar');
+    });
+
+    it('ignores the host when missing from the host', function () {
+      var data = parse('http://google.com:808/?foo=bar');
+
+      assume(data.set('host', ':909')).equals(data);
+      assume(data.hostname).equals('google.com');
+      assume(data.host).equals('google.com:909');
+      assume(data.port).equals('909');
+
+      assume(data.href).equals('http://google.com:909/?foo=bar');
+    });
+
     it('updates the host when updating hostname', function () {
       var data = parse('http://google.com:808/?foo=bar');
 
@@ -492,7 +514,7 @@ describe('url-parse', function () {
       assume(data.href).equals('http://yahoo.com:808/?foo=bar');
     });
 
-    it('updates slashes when updating protocol', function() {
+    it('updates slashes when updating protocol', function () {
       var data = parse('sip:alice@atlanta.com');
 
       assume(data.set('protocol', 'https')).equals(data);

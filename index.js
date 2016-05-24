@@ -209,13 +209,10 @@ URL.prototype.set = function set(part, value, fn) {
     if (url.port) value += ':'+ url.port;
     url.host = value;
   } else if ('host' === part) {
-    url[part] = value;
-
-    if (/\:\d+/.test(value)) {
-      value = value.split(':');
-      url.hostname = value[0];
-      url.port = value[1];
-    }
+    value = value.split(':');
+    url.hostname = value[0] ? value[0] : url.hostname;
+    url.port = value[1] ? value[1] : url.port;
+    url[part] = url.hostname + ':' + url.port;
   } else if ('protocol' === part) {
     url.protocol = value;
     url.slashes = !fn;
