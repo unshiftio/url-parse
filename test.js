@@ -480,6 +480,42 @@ describe('url-parse', function () {
       assume(data.href).equals('http://yahoo.com:808/?foo=bar');
     });
 
+    it('updates the port when updating host (IPv6)', function () {
+      var data = parse('http://google.com/?foo=bar');
+
+      assume(data.set('host', '[56h7::1]:808')).equals(data);
+
+      assume(data.hostname).equals('[56h7::1]');
+      assume(data.host).equals('[56h7::1]:808');
+      assume(data.port).equals('808');
+
+      assume(data.href).equals('http://[56h7::1]:808/?foo=bar');
+    });
+
+    it.skip('unsets the port when port is missing (IPv6)', function () {
+      var data = parse('http://google.com/?foo=bar');
+
+      assume(data.set('host', '56h7::1')).equals(data);
+
+      assume(data.hostname).equals('56h7::1');
+      assume(data.host).equals('56h7::1');
+      assume(data.port).equals('');
+
+      assume(data.href).equals('http://[56h7::1]/?foo=bar');
+    });
+
+    it('unsets the port when the port is missing from host', function () {
+      var data = parse('http://google.com:8000/?foo=bar');
+
+      assume(data.set('host', 'yahoo.com')).equals(data);
+
+      assume(data.hostname).equals('yahoo.com');
+      assume(data.host).equals('yahoo.com');
+      assume(data.port).equals('');
+
+      assume(data.href).equals('http://yahoo.com/?foo=bar');
+    });
+
     it('updates the host when updating hostname', function () {
       var data = parse('http://google.com:808/?foo=bar');
 
