@@ -54,6 +54,17 @@ function extractProtocol(address) {
 }
 
 /**
+ * Check for IPv6 formatted hostname
+ *
+ * @param  {String}  hostname hostname
+ * @return {Boolean}          Whether or not the hostname is IPv6
+ * @api private
+ */
+function isIPv6(hostname) {
+  return hostname[0] === '[' && hostname[hostname.length - 1] === ']';
+}
+
+/**
  * The actual URL instance. Instead of returning an object we've opted-in to
  * create an actual constructor as it's much more memory efficient and
  * faster and it pleases my OCD.
@@ -166,6 +177,9 @@ function URL(address, location, parser) {
     url.password = instruction[1] || '';
   }
 
+  // IPv6 - remove brackets from hostname
+  if (isIPv6(url.hostname)) url.hostname = url.hostname.slice(1, -1);
+
   //
   // The href is just the compiled result.
   //
@@ -206,6 +220,8 @@ URL.prototype.set = function set(part, value, fn) {
   } else if ('hostname' === part) {
     url[part] = value;
 
+    if (isIPv6(url.hostname)) url.hostname = url.hostname.slice(1, -1);
+
     if (url.port) value += ':'+ url.port;
     url.host = value;
   } else if ('host' === part) {
@@ -219,6 +235,10 @@ URL.prototype.set = function set(part, value, fn) {
       url.hostname = value;
       url.port = '';
     }
+
+    // Remove brackets from IPv6 hostname
+    if (isIPv6(url.hostname)) url.hostname = url.hostname.slice(1, -1);
+
   } else if ('protocol' === part) {
     url.protocol = value;
     url.slashes = !fn;
@@ -254,9 +274,7 @@ URL.prototype.toString = function toString(stringify) {
     result += '@';
   }
 
-  result += url.hostname;
-  if (url.port) result += ':'+ url.port;
-
+  result += url.host;
   result += url.pathname;
 
   query = 'object' === typeof url.query ? stringify(url.query) : url.query;
@@ -272,6 +290,7 @@ URL.prototype.toString = function toString(stringify) {
 // others or testing.
 //
 URL.extractProtocol = extractProtocol;
+URL.isIPv6 = isIPv6;
 URL.location = lolcation;
 URL.qs = qs;
 

@@ -30,15 +30,17 @@ combinations.hostname = [
   'xn--n3h.com',
   'localhost',
   '127.0.0.1',
-  '255.255.255.255'/*,
-  '3ffe:6a88:85a3:08d3:1319:8a2e:0370:7344',
-  '2001:2353::1428:57ab',
-  '2001:2353:0::0:1428:57ab',
-  '2001:2353:0:0:0:0:1428:57ab',
-  '2001:2353:0000:0000:0000::1428:57ab',
-  '2001:2353:0000:0000:0000:0000:1428:57ab',
-  '2001:2353:02de::0e13',
-  '2001:2353:2de::e13'*/
+  '255.255.255.255',
+  '[3ffe:6a88:85a3:08d3:1319:8a2e:0370:7344]',
+  '[2001:2353::1428:57ab]',
+  '[2001:2353:0::0:1428:57ab]',
+  '[2001:2353:0:0:0:0:1428:57ab]',
+  '[2001:2353:0000:0000:0000::1428:57ab]',
+  '[2001:2353:0000:0000:0000:0000:1428:57ab]',
+  '[2001:2353:02de::0e13]',
+  '[2001:2353:2de::e13]',
+  '[::2]',
+  '[1::]'
 ];
 combinations.port = ['8080', '844', '3340'];
 combinations.pathname = [
@@ -110,6 +112,9 @@ module.exports = function generate() {
     spec.username = get('username');
     spec.password = get('password');
   }
+
+  spec.host = spec.port ? spec.hostname + ':' + spec.port : spec.hostname;
+  if (URL.isIPv6(spec.hostname)) spec.hostname = spec.hostname.slice(1, -1);
 
   for (key in combinations) {
     url[key] = '';
