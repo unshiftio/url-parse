@@ -211,7 +211,7 @@ URL.prototype.set = function set(part, value, fn) {
   } else if ('host' === part) {
     url[part] = value;
 
-    if (/\:\d+$/.test(value)) {
+    if (/:\d+$/.test(value)) {
       value = value.split(':');
       url.port = value.pop();
       url.hostname = value.join(':');

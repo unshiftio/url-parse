@@ -492,13 +492,13 @@ describe('url-parse', function () {
       assume(data.href).equals('http://[56h7::1]:808/?foo=bar');
     });
 
-    it.skip('unsets the port when port is missing (IPv6)', function () {
+    it('unsets the port when port is missing (IPv6)', function () {
       var data = parse('http://google.com/?foo=bar');
 
-      assume(data.set('host', '56h7::1')).equals(data);
+      assume(data.set('host', '[56h7::1]')).equals(data);
 
-      assume(data.hostname).equals('56h7::1');
-      assume(data.host).equals('56h7::1');
+      assume(data.hostname).equals('[56h7::1]');
+      assume(data.host).equals('[56h7::1]');
       assume(data.port).equals('');
 
       assume(data.href).equals('http://[56h7::1]/?foo=bar');
