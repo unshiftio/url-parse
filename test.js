@@ -217,7 +217,7 @@ describe('url-parse', function () {
       assume(parsed.port).equals('61616');
       assume(parsed.query).equals('?q=z');
       assume(parsed.protocol).equals('http:');
-      assume(parsed.hostname).equals('[1080:0:0:0:8:800:200c:417a]');
+      assume(parsed.hostname).equals('1080:0:0:0:8:800:200c:417a');
       assume(parsed.pathname).equals('/foo/bar');
       assume(parsed.href).equals('http://[1080:0:0:0:8:800:200c:417a]:61616/foo/bar?q=z');
     });
@@ -229,8 +229,17 @@ describe('url-parse', function () {
       assume(parsed.username).equals('user');
       assume(parsed.password).equals('password');
       assume(parsed.host).equals('[3ffe:2a00:100:7031::1]:8080');
-      assume(parsed.hostname).equals('[3ffe:2a00:100:7031::1]');
+      assume(parsed.hostname).equals('3ffe:2a00:100:7031::1');
       assume(parsed.href).equals(url);
+    });
+
+    it('strips the brackets off the hostname but not the host', function () {
+      var url = 'http://[3ffe:2a00:100:7031::1]/foo'
+        , parsed = parse(url);
+
+      assume(parsed.hostname).equals('3ffe:2a00:100:7031::1');
+      assume(parsed.host).equals('[3ffe:2a00:100:7031::1]');
+      assume(parsed.href).equals('http://[3ffe:2a00:100:7031::1]/foo');
     });
 
     it('parses ipv4', function () {
@@ -394,6 +403,15 @@ describe('url-parse', function () {
       assume(data.href).equals('http://google.com:8080/foo');
     });
 
+    it('correctly updates the host when setting port (IPv6)', function () {
+      var data = parse('http://[7886:3423::1233]/foo');
+
+      assume(data.set('port', 8080)).equals(data);
+
+      assume(data.host).equals('[7886:3423::1233]:8080');
+      assume(data.href).equals('http://[7886:3423::1233]:8080/foo');
+    });
+
     it('removes querystring and hash', function () {
       var data = parse('https://thisanurl.com/?swag=yolo#representing');
 
@@ -414,6 +432,19 @@ describe('url-parse', function () {
       assume(data.set('port', 443)).equals(data);
       assume(data.host).equals('google.com:443');
       assume(data.href).equals('http://google.com:443/foo');
+    });
+
+    it('only sets port when its not default (IPv6)', function () {
+      var data = parse('http://[7886:3423::1233]/foo');
+
+      assume(data.set('port', 80)).equals(data);
+
+      assume(data.host).equals('[7886:3423::1233]');
+      assume(data.href).equals('http://[7886:3423::1233]/foo');
+
+      assume(data.set('port', 443)).equals(data);
+      assume(data.host).equals('[7886:3423::1233]:443');
+      assume(data.href).equals('http://[7886:3423::1233]:443/foo');
     });
 
     it('updates query with object', function () {
@@ -485,7 +516,7 @@ describe('url-parse', function () {
 
       assume(data.set('host', '[56h7::1]:808')).equals(data);
 
-      assume(data.hostname).equals('[56h7::1]');
+      assume(data.hostname).equals('56h7::1');
       assume(data.host).equals('[56h7::1]:808');
       assume(data.port).equals('808');
 
@@ -497,7 +528,7 @@ describe('url-parse', function () {
 
       assume(data.set('host', '[56h7::1]')).equals(data);
 
-      assume(data.hostname).equals('[56h7::1]');
+      assume(data.hostname).equals('56h7::1');
       assume(data.host).equals('[56h7::1]');
       assume(data.port).equals('');
 
@@ -514,6 +545,18 @@ describe('url-parse', function () {
       assume(data.port).equals('');
 
       assume(data.href).equals('http://yahoo.com/?foo=bar');
+    });
+
+    it('strips brackets from IPv6 hostnames', function () {
+      var data = parse('http://google.com/?foo=bar');
+
+      assume(data.set('hostname', '[2001:db8:a0b:12f0::1]')).equals(data);
+
+      assume(data.hostname).equals('2001:db8:a0b:12f0::1');
+      assume(data.host).equals('[2001:db8:a0b:12f0::1]');
+      assume(data.port).equals('');
+
+      assume(data.href).equals('http://[2001:db8:a0b:12f0::1]/?foo=bar');
     });
 
     it('updates the host when updating hostname', function () {
