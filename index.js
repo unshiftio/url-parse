@@ -211,10 +211,13 @@ URL.prototype.set = function set(part, value, fn) {
   } else if ('host' === part) {
     url[part] = value;
 
-    if (/\:\d+/.test(value)) {
+    if (/:\d+$/.test(value)) {
       value = value.split(':');
-      url.hostname = value[0];
-      url.port = value[1];
+      url.port = value.pop();
+      url.hostname = value.join(':');
+    } else {
+      url.hostname = value;
+      url.port = '';
     }
   } else if ('protocol' === part) {
     url.protocol = value;
