@@ -61,7 +61,7 @@ function extractProtocol(address) {
  * @api private
  */
 function isIPv6(hostname) {
-  return hostname[0] === '[' && hostname[hostname.length - 1] === ']';
+  return (hostname[0] === '[' && hostname[hostname.length - 1] === ']') || /:/.test(hostname);
 }
 
 /**
@@ -177,7 +177,7 @@ function URL(address, location, parser) {
     url.password = instruction[1] || '';
   }
 
-  // IPv6 - remove brackets from hostname
+  // Remove brackets from IPv6 hostname
   if (isIPv6(url.hostname)) url.hostname = url.hostname.slice(1, -1);
 
   //
@@ -212,14 +212,15 @@ URL.prototype.set = function set(part, value, fn) {
     url[part] = value;
 
     if (!required(value, url.protocol)) {
-      url.host = url.hostname;
+      url.host = isIPv6(url.hostname) ? '['+ url.hostname +']' : url.hostname;
       url[part] = '';
     } else if (value) {
-      url.host = url.hostname +':'+ value;
+      url.host = isIPv6(url.hostname) ? '['+ url.hostname +']' +':'+ value : url.hostname +':'+ value;
     }
   } else if ('hostname' === part) {
     url[part] = value;
 
+    // Remove brackets from IPv6 hostname
     if (isIPv6(url.hostname)) url.hostname = url.hostname.slice(1, -1);
 
     if (url.port) value += ':'+ url.port;
