@@ -211,11 +211,12 @@ URL.prototype.set = function set(part, value, fn) {
   } else if ('port' === part) {
     url[part] = value;
 
+    var host = isIPv6(url.hostname) ? '['+ url.hostname +']' : url.hostname;
     if (!required(value, url.protocol)) {
-      url.host = isIPv6(url.hostname) ? '['+ url.hostname +']' : url.hostname;
+      url.host = host;
       url[part] = '';
     } else if (value) {
-      url.host = isIPv6(url.hostname) ? '['+ url.hostname +']' +':'+ value : url.hostname +':'+ value;
+      url.host = host +':'+ value;
     }
   } else if ('hostname' === part) {
     url[part] = value;
