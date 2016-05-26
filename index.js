@@ -24,7 +24,7 @@ var instructions = [
   ['/', 'pathname'],                    // Extract from the back.
   ['@', 'auth', 1],                     // Extract from the front.
   [NaN, 'host', undefined, 1, 1],       // Set left over value.
-  [/\:(\d+)$/, 'port'],                 // RegExp the back.
+  [/:(\d+)$/, 'port'],                  // RegExp the back.
   [NaN, 'hostname', undefined, 1, 1]    // Set left over.
 ];
 
