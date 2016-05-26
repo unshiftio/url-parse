@@ -254,10 +254,7 @@ URL.prototype.toString = function toString(stringify) {
     result += '@';
   }
 
-  result += url.hostname;
-  if (url.port) result += ':'+ url.port;
-
-  result += url.pathname;
+  result += url.host + url.pathname;
 
   query = 'object' === typeof url.query ? stringify(url.query) : url.query;
   if (query) result += '?' !== query.charAt(0) ? '?'+ query : query;
