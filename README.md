@@ -74,10 +74,12 @@ var parse = require('url-parse')
 
 The returned `url` instance contains the following properties:
 
-- `protocol`: Requested protocol without slashes (e.g. `http:`).
+- `protocol`: The protocol scheme of the URL (e.g. `http:`).
+- `slashes`: A boolean which indicates whether the `protocol` is followed by two
+  forward slashes (`//`).
+- `auth`: Authentication information portion (e.g. `username:password`).
 - `username`: Username of basic authentication.
 - `password`: Password of basic authentication.
-- `auth`: Authentication information portion (e.g. `username:password`).
 - `host`: Host name with port number.
 - `hostname`: Host name without port number.
 - `port`: Optional port number.
