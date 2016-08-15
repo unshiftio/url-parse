@@ -210,9 +210,11 @@ describe('url-parse', function () {
 
       o = parse('https://google.com:80/pathname');
       assume(o.origin).equals('https://google.com:80');
+    });
 
-      o = parse('file://google.com/pathname');
-      assume(o.origin).equals('file://google.com');
+    it('handles file:// based urls as null', function () {
+      var o = parse('file://google.com/pathname');
+      assume(o.origin).equals('null');
     });
 
     it('removes default ports for ws', function () {
@@ -645,6 +647,22 @@ describe('url-parse', function () {
       data.set('hostname', 'YAhOo.COm');
       assume(data.hostname).equals('yahoo.com');
       assume(data.href).equals('https://yahoo.com/?foo=bar');
+    });
+
+    it('correctly updates the origin when host/protocol/port changes', function () {
+      var data = parse('http://google.com/?foo=bar');
+
+      data.set('protocol', 'HTTPS:');
+      assume(data.protocol).equals('https:');
+      assume(data.origin).equals('https://google.com');
+
+      data.set('port', '1337');
+      assume(data.port).equals('1337');
+      assume(data.origin).equals('https://google.com:1337');
+
+      data.set('protocol', 'file:');
+      assume(data.protocol).equals('file:');
+      assume(data.origin).equals('null');
     });
   });
 

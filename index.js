@@ -169,7 +169,7 @@ function URL(address, location, parser) {
   //
   // The href is just the compiled result.
   //
-  url.origin = url.protocol && url.host ? url.protocol +'//'+ url.host : 'null';
+  url.origin = url.protocol && url.host && url.protocol !== 'file:' ? url.protocol +'//'+ url.host : 'null';
   url.href = url.toString();
 }
 
@@ -235,7 +235,7 @@ URL.prototype.set = function set(part, value, fn) {
     }
   }
 
-  url.origin = url.protocol && url.host ? url.protocol +'//'+ url.host : 'null';
+  url.origin = url.protocol && url.host && url.protocol !== 'file:' ? url.protocol +'//'+ url.host : 'null';
   url.href = url.toString();
 
   return url;
