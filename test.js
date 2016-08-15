@@ -187,7 +187,7 @@ describe('url-parse', function () {
 
     it('sets null if no hostname is specified', function () {
       var url = 'http://'
-        , parsed = parse(url);
+        , parsed = parse(url, {});
 
       assume(parsed.origin).equals('null');
     });
