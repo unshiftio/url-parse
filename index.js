@@ -169,6 +169,7 @@ function URL(address, location, parser) {
   //
   // The href is just the compiled result.
   //
+  url.origin = url.protocol && url.host ? url.protocol +'//'+ url.host : 'null';
   url.href = url.toString();
 }
 
@@ -220,13 +221,23 @@ URL.prototype.set = function set(part, value, fn) {
       url.port = '';
     }
   } else if ('protocol' === part) {
-    url.protocol = value;
+    url.protocol = value.toLowerCase();
     url.slashes = !fn;
   } else {
     url[part] = value;
   }
 
+  for (var i = 0; i < instructions.length; i++) {
+    var ins = instructions[i];
+
+    if (ins[4]) {
+      url[ins[1]] = url[ins[1]].toLowerCase();
+    }
+  }
+
+  url.origin = url.protocol && url.host ? url.protocol +'//'+ url.host : 'null';
   url.href = url.toString();
+
   return url;
 };
 

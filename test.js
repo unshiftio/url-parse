@@ -170,8 +170,68 @@ describe('url-parse', function () {
     assume(parsed.pathname).equals('/b/c');
   });
 
-  describe('protocol', function() {
-    it('extracts the right protocol from a url', function() {
+  describe('origin', function () {
+    it('generates an origin property', function () {
+      var url = 'http://google.com:80/pathname'
+        , parsed = parse(url);
+
+      assume(parsed.origin).equals('http://google.com');
+    });
+
+    it('is lowercased', function () {
+      var url = 'HTTP://gOogle.cOm:80/pathname'
+        , parsed = parse(url);
+
+      assume(parsed.origin).equals('http://google.com');
+    });
+
+    it('sets null if no hostname is specified', function () {
+      var url = 'http://'
+        , parsed = parse(url);
+
+      assume(parsed.origin).equals('null');
+    });
+
+    it('removes default ports for http', function () {
+      var o = parse('http://google.com:80/pathname');
+      assume(o.origin).equals('http://google.com');
+
+      o = parse('http://google.com:80');
+      assume(o.origin).equals('http://google.com');
+
+      o = parse('http://google.com');
+      assume(o.origin).equals('http://google.com');
+
+      o = parse('https://google.com:443/pathname');
+      assume(o.origin).equals('https://google.com');
+
+      o = parse('http://google.com:443/pathname');
+      assume(o.origin).equals('http://google.com:443');
+
+      o = parse('https://google.com:80/pathname');
+      assume(o.origin).equals('https://google.com:80');
+
+      o = parse('file://google.com/pathname');
+      assume(o.origin).equals('file://google.com');
+    });
+
+    it('removes default ports for ws', function () {
+      var o = parse('ws://google.com:80/pathname');
+      assume(o.origin).equals('ws://google.com');
+
+      o = parse('wss://google.com:443/pathname');
+      assume(o.origin).equals('wss://google.com');
+
+      o = parse('ws://google.com:443/pathname');
+      assume(o.origin).equals('ws://google.com:443');
+
+      o = parse('wss://google.com:80/pathname');
+      assume(o.origin).equals('wss://google.com:80');
+    });
+  });
+
+  describe('protocol', function () {
+    it('extracts the right protocol from a url', function () {
       var testData = [
         { url: 'http://example.com', protocol: 'http:' },
         { url: 'mailto:test@example.com', protocol: 'mailto:' },
@@ -569,6 +629,22 @@ describe('url-parse', function () {
       assume(data.protocol).equals('https:');
 
       assume(data.href).equals('https://google.com/?foo=bar');
+    });
+
+    it('lowercases the required values', function () {
+      var data = parse('http://google.com/?foo=bar');
+
+      data.set('protocol', 'HTTPS:');
+      assume(data.protocol).equals('https:');
+      assume(data.href).equals('https://google.com/?foo=bar');
+
+      data.set('host', 'GOOGLE.LOL');
+      assume(data.host).equals('google.lol');
+      assume(data.href).equals('https://google.lol/?foo=bar');
+
+      data.set('hostname', 'YAhOo.COm');
+      assume(data.hostname).equals('yahoo.com');
+      assume(data.href).equals('https://yahoo.com/?foo=bar');
     });
   });
 
