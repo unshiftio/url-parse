@@ -87,6 +87,7 @@ The returned `url` instance contains the following properties:
 - `query`: Parsed object containing query string, unless parsing is set to false.
 - `hash`: The "fragment" portion of the URL including the pound-sign (`#`).
 - `href`: The full URL.
+- `origin`: The origin of the URL.
 
 ### URL.set(key, value)
 
