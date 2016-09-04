@@ -235,16 +235,33 @@ describe('url-parse', function () {
   describe('protocol', function () {
     it('extracts the right protocol from a url', function () {
       var testData = [
-        { url: 'http://example.com', protocol: 'http:' },
-        { url: 'mailto:test@example.com', protocol: 'mailto:' },
-        { url: 'data:text/html,%3Ch1%3EHello%2C%20World!%3C%2Fh1%3E', protocol: 'data:' },
-        { url: 'sip:alice@atlanta.com', protocol: 'sip:' }
+        {
+          href: 'http://example.com',
+          protocol: 'http:',
+          pathname: ''
+        },
+        {
+          href: 'mailto:test@example.com',
+          pathname: 'test@example.com',
+          protocol: 'mailto:'
+        },
+        {
+          href: 'data:text/html,%3Ch1%3EHello%2C%20World!%3C%2Fh1%3E',
+          pathname: 'text/html,%3Ch1%3EHello%2C%20World!%3C%2Fh1%3E',
+          protocol: 'data:'
+        },
+        {
+          href: 'sip:alice@atlanta.com',
+          pathname: 'alice@atlanta.com',
+          protocol: 'sip:'
+        }
       ];
 
       var data;
       for (var i = 0, len = testData.length; i < len; ++i) {
-        data = testData[i];
-        assume(parse(data.url).protocol).equals(data.protocol);
+        data = parse(testData[i].href);
+        assume(data.protocol).equals(testData[i].protocol);
+        assume(data.pathname).equals(testData[i].pathname);
       }
     });
 
@@ -255,7 +272,7 @@ describe('url-parse', function () {
     });
 
     it('correctly adds ":" to protocol in final url string', function () {
-      var data = parse('google.com/foo');
+      var data = parse('google.com/foo', {});
       data.set('protocol', 'https');
       assume(data.href).equals('https://google.com/foo');
 
@@ -270,8 +287,6 @@ describe('url-parse', function () {
   });
 
   describe('ip', function () {
-    // coap://
-    //
     it('parses ipv6', function () {
       var url = 'http://[1080:0:0:0:8:800:200C:417A]:61616/foo/bar?q=z'
         , parsed = parse(url);

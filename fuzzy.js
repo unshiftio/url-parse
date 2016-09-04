@@ -1,7 +1,7 @@
 'use strict';
 
 var URL = require('./')
-  , url = new URL('');
+  , url = new URL('//');
 
 /**
  * A dictionary with all kind of different options that should generate a valid
@@ -16,8 +16,8 @@ combinations.protocol = [
   'http:',
   'https:',
   'ws:',
-  'wss:',
-  'blob:'/*,
+  'wss:'/*,
+  'blob:',
   ''*/
 ];
 combinations.username = ['foo', 'bar'];
@@ -53,9 +53,10 @@ combinations.pathname = [
   '/@3rd-Eden',
   '/a/b/c/d/e/f/g/j/1/d/4/'
 ];
-combinations.query = ['foo=bar',
+combinations.query = [
   'foo[]=bar&foo[]=foo',
   'email=foo@bar.travel',
+  'foo=bar',
   'q='
 ];
 combinations.hash = [
