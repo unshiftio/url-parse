@@ -433,12 +433,47 @@ describe('url-parse', function () {
       assume(data.href).equals('http://foo.com/foo');
     });
 
-    it('does not inherit pathnames from the source', function () {
+    it('does not inherit pathname for non relative urls', function () {
       var data = parse('http://localhost', parse('http://foo:bar@sub.example.com/bar?foo=bar#hash'));
 
       assume(data.port).equals('');
       assume(data.host).equals('localhost');
       assume(data.href).equals('http://localhost');
+    });
+
+    it('resolves pathname for relative urls', function () {
+      var data, i = 0;
+      var tests = [
+        ['', 'http://foo.com', ''],
+        ['', 'http://foo.com/', '/'],
+        ['a', 'http://foo.com', '/a'],
+        ['a/', 'http://foo.com', '/a/'],
+        ['b/c', 'http://foo.com/a', '/b/c'],
+        ['b/c', 'http://foo.com/a/', '/a/b/c'],
+        ['.', 'http://foo.com', '/'],
+        ['./', 'http://foo.com', '/'],
+        ['./.', 'http://foo.com', '/'],
+        ['.', 'http://foo.com/a', '/'],
+        ['.', 'http://foo.com/a/', '/a/'],
+        ['./', 'http://foo.com/a/', '/a/'],
+        ['./.', 'http://foo.com/a/', '/a/'],
+        ['./b', 'http://foo.com/a/', '/a/b'],
+        ['..', 'http://foo.com', '/'],
+        ['../', 'http://foo.com', '/'],
+        ['../..', 'http://foo.com', '/'],
+        ['..', 'http://foo.com/a/b', '/'],
+        ['..', 'http://foo.com/a/b/', '/a/'],
+        ['../..', 'http://foo.com/a/b', '/'],
+        ['../..', 'http://foo.com/a/b/', '/'],
+        ['../../../../c', 'http://foo.com/a/b/', '/c'],
+        ['./../d', 'http://foo.com/a/b/c', '/a/d'],
+        ['d/e/f/./../../g', 'http://foo.com/a/b/c', '/a/b/d/g']
+      ];
+
+      for (; i < tests.length; i++) {
+        data = parse(tests[i][0], tests[i][1]);
+        assume(data.pathname).equals(tests[i][2]);
+      }
     });
 
     it('does not inherit hashes and query strings from source object', function () {
@@ -450,8 +485,8 @@ describe('url-parse', function () {
     });
 
     it('does not inherit auth from source object', function () {
-      var from = parse('http://foo:bar@sub.example.com')
-        , data = parse('/foo', from);
+      var base = parse('http://foo:bar@sub.example.com')
+        , data = parse('/foo', base);
 
       assume(data.port).equals('');
       assume(data.username).equals('');
