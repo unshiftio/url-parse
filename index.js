@@ -3,11 +3,10 @@
 var required = require('requires-port')
   , lolcation = require('./lolcation')
   , qs = require('querystringify')
-  , relativere = /^\/(?!\/)/
   , protocolre = /^([a-z][a-z0-9.+-]*:)?(\/\/)?([\S\s]*)/i;
 
 /**
- * These are the parse instructions for the URL parsers, it informs the parser
+ * These are the parse rules for the URL parser, it informs the parser
  * about:
  *
  * 0. The char it Needs to parse, if it's a string it should be done using
@@ -18,39 +17,73 @@ var required = require('requires-port')
  * 3. Inherit from location if non existing in the parser.
  * 4. `toLowerCase` the resulting value.
  */
-var instructions = [
+var rules = [
   ['#', 'hash'],                        // Extract from the back.
   ['?', 'query'],                       // Extract from the back.
   ['/', 'pathname'],                    // Extract from the back.
   ['@', 'auth', 1],                     // Extract from the front.
   [NaN, 'host', undefined, 1, 1],       // Set left over value.
-  [/:(\d+)$/, 'port'],                  // RegExp the back.
+  [/:(\d+)$/, 'port', undefined, 1],    // RegExp the back.
   [NaN, 'hostname', undefined, 1, 1]    // Set left over.
 ];
 
- /**
+/**
  * @typedef ProtocolExtract
  * @type Object
- * @property {String} protocol Protocol matched in the URL, in lowercase
- * @property {Boolean} slashes Indicates whether the protocol is followed by double slash ("//")
- * @property {String} rest     Rest of the URL that is not part of the protocol
+ * @property {String} protocol Protocol matched in the URL, in lowercase.
+ * @property {Boolean} slashes `true` if protocol is followed by "//", else `false`.
+ * @property {String} rest Rest of the URL that is not part of the protocol.
  */
 
- /**
-  * Extract protocol information from a URL with/without double slash ("//")
-  *
-  * @param  {String} address   URL we want to extract from.
-  * @return {ProtocolExtract}  Extracted information
-  * @api private
-  */
+/**
+ * Extract protocol information from a URL with/without double slash ("//").
+ *
+ * @param {String} address URL we want to extract from.
+ * @return {ProtocolExtract} Extracted information.
+ * @api private
+ */
 function extractProtocol(address) {
   var match = protocolre.exec(address);
 
   return {
     protocol: match[1] ? match[1].toLowerCase() : '',
     slashes: !!match[2],
-    rest: match[3] ? match[3] : ''
+    rest: match[3]
   };
+}
+
+/**
+ * Resolve a relative URL pathname against a base URL pathname.
+ *
+ * @param {String} relative Pathname of the relative URL.
+ * @param {String} base Pathname of the base URL.
+ * @return {String} Resolved pathname.
+ * @api private
+ */
+function resolve(relative, base) {
+  var path = (base || '/').split('/').slice(0, -1).concat(relative.split('/'))
+    , i = path.length
+    , last = path[i - 1]
+    , unshift = false
+    , up = 0;
+
+  while (i--) {
+    if (path[i] === '.') {
+      path.splice(i, 1);
+    } else if (path[i] === '..') {
+      path.splice(i, 1);
+      up++;
+    } else if (up) {
+      if (i === 0) unshift = true;
+      path.splice(i, 1);
+      up--;
+    }
+  }
+
+  if (unshift) path.unshift('');
+  if (last === '.' || last === '..') path.push('');
+
+  return path.join('/');
 }
 
 /**
@@ -69,11 +102,10 @@ function URL(address, location, parser) {
     return new URL(address, location, parser);
   }
 
-  var relative = relativere.test(address)
-    , parse, instruction, index, key
+  var relative, extracted, parse, instruction, index, key
+    , instructions = rules.slice()
     , type = typeof location
     , url = this
-    , extracted
     , i = 0;
 
   //
@@ -92,19 +124,24 @@ function URL(address, location, parser) {
     location = null;
   }
 
-  if (parser && 'function' !== typeof parser) {
-    parser = qs.parse;
-  }
+  if (parser && 'function' !== typeof parser) parser = qs.parse;
 
   location = lolcation(location);
 
   //
-  // extract protocol information before running the instructions
+  // Extract protocol information before running the instructions.
   //
   extracted = extractProtocol(address);
+  relative = !extracted.protocol && !extracted.slashes;
+  url.slashes = extracted.slashes || relative && location.slashes;
   url.protocol = extracted.protocol || location.protocol || '';
-  url.slashes = extracted.slashes || location.slashes;
   address = extracted.rest;
+
+  //
+  // When the authority component is absent the URL starts with a path
+  // component.
+  //
+  if (!extracted.slashes) instructions[2] = [/(.*)/, 'pathname'];
 
   for (; i < instructions.length; i++) {
     instruction = instructions[i];
@@ -125,18 +162,18 @@ function URL(address, location, parser) {
       }
     } else if (index = parse.exec(address)) {
       url[key] = index[1];
-      address = address.slice(0, address.length - index[0].length);
+      address = address.slice(0, index.index);
     }
 
-    url[key] = url[key] || (instruction[3] || ('port' === key && relative) ? location[key] || '' : '');
+    url[key] = url[key] || (
+      relative && instruction[3] ? location[key] || '' : ''
+    );
 
     //
     // Hostname, host and protocol should be lowercased so they can be used to
     // create a proper `origin`.
     //
-    if (instruction[4]) {
-      url[key] = url[key].toLowerCase();
-    }
+    if (instruction[4]) url[key] = url[key].toLowerCase();
   }
 
   //
@@ -145,6 +182,18 @@ function URL(address, location, parser) {
   // parser.
   //
   if (parser) url.query = parser(url.query);
+
+  //
+  // If the URL is relative, resolve the pathname against the base URL.
+  //
+  if (
+      relative
+    && location.slashes
+    && url.pathname.charAt(0) !== '/'
+    && (url.pathname !== '' || location.pathname !== '')
+  ) {
+    url.pathname = resolve(url.pathname, location.pathname);
+  }
 
   //
   // We should not add port numbers if they are already the default port number
@@ -166,10 +215,13 @@ function URL(address, location, parser) {
     url.password = instruction[1] || '';
   }
 
+  url.origin = url.protocol && url.host && url.protocol !== 'file:'
+    ? url.protocol +'//'+ url.host
+    : 'null';
+
   //
   // The href is just the compiled result.
   //
-  url.origin = url.protocol && url.host && url.protocol !== 'file:' ? url.protocol +'//'+ url.host : 'null';
   url.href = url.toString();
 }
 
@@ -179,10 +231,10 @@ function URL(address, location, parser) {
  *
  * @param {String} part          Property we need to adjust.
  * @param {Mixed} value          The newly assigned value.
- * @param {Boolean|Function} fn  When setting the query, it will be the function used to parse
- *                               the query.
- *                               When setting the protocol, double slash will be removed from
- *                               the final url if it is true.
+ * @param {Boolean|Function} fn  When setting the query, it will be the function
+ *                               used to parse the query.
+ *                               When setting the protocol, double slash will be
+ *                               removed from the final url if it is true.
  * @returns {URL}
  * @api public
  */
@@ -227,15 +279,16 @@ URL.prototype.set = function set(part, value, fn) {
     url[part] = value;
   }
 
-  for (var i = 0; i < instructions.length; i++) {
-    var ins = instructions[i];
+  for (var i = 0; i < rules.length; i++) {
+    var ins = rules[i];
 
-    if (ins[4]) {
-      url[ins[1]] = url[ins[1]].toLowerCase();
-    }
+    if (ins[4]) url[ins[1]] = url[ins[1]].toLowerCase();
   }
 
-  url.origin = url.protocol && url.host && url.protocol !== 'file:' ? url.protocol +'//'+ url.host : 'null';
+  url.origin = url.protocol && url.host && url.protocol !== 'file:'
+    ? url.protocol +'//'+ url.host
+    : 'null';
+
   url.href = url.toString();
 
   return url;
