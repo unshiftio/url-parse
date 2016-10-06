@@ -146,6 +146,19 @@ describe('url-parse', function () {
     assume(parsed.href).equals('http://example.com/');
   });
 
+  it('prepends / to pathname', function () {
+    var url = parse();
+
+    url
+      .set('protocol', 'http')
+      .set('host', 'example.com:80')
+      .set('pathname', 'will/get/slash/prepended');
+
+    assume(url.pathname).equals('/will/get/slash/prepended');
+    assume(url.href).equals('http://example.com:80/will/get/slash/prepended')
+
+  });
+
   it('does not care about spaces', function () {
     var url = 'http://x.com/path?that\'s#all, folks'
       , parsed = parse(url);
