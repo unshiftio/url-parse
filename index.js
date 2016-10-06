@@ -240,43 +240,61 @@ function URL(address, location, parser) {
  */
 URL.prototype.set = function set(part, value, fn) {
   var url = this;
+  
+  switch(part) {
+    case 'query':
+      if ('string' === typeof value && value.length) {
+        value = (fn || qs.parse)(value);
+      }
 
-  if ('query' === part) {
-    if ('string' === typeof value && value.length) {
-      value = (fn || qs.parse)(value);
-    }
+      url[part] = value;
+      break;
 
-    url[part] = value;
-  } else if ('port' === part) {
-    url[part] = value;
+    case 'port':
+      url[part] = value;
 
-    if (!required(value, url.protocol)) {
-      url.host = url.hostname;
-      url[part] = '';
-    } else if (value) {
-      url.host = url.hostname +':'+ value;
-    }
-  } else if ('hostname' === part) {
-    url[part] = value;
+      if (!required(value, url.protocol)) {
+        url.host = url.hostname;
+        url[part] = '';
+      } else if (value) {
+        url.host = url.hostname +':'+ value;
+      }
 
-    if (url.port) value += ':'+ url.port;
-    url.host = value;
-  } else if ('host' === part) {
-    url[part] = value;
+      break;
 
-    if (/:\d+$/.test(value)) {
-      value = value.split(':');
-      url.port = value.pop();
-      url.hostname = value.join(':');
-    } else {
-      url.hostname = value;
-      url.port = '';
-    }
-  } else if ('protocol' === part) {
-    url.protocol = value.toLowerCase();
-    url.slashes = !fn;
-  } else {
-    url[part] = value;
+    case 'hostname':
+      url[part] = value;
+
+      if (url.port) value += ':'+ url.port;
+      url.host = value;
+      break;
+
+    case 'host':
+      url[part] = value;
+
+      if (/:\d+$/.test(value)) {
+        value = value.split(':');
+        url.port = value.pop();
+        url.hostname = value.join(':');
+      } else {
+        url.hostname = value;
+        url.port = '';
+      }
+
+      break;
+
+    case 'protocol':
+      url.protocol = value.toLowerCase();
+      url.slashes = !fn;
+      break;
+
+    case 'pathname':
+      url.pathname = value.charAt(0) === '/' ? value : '/' + value;
+      break;
+
+    default:
+      url[part] = value;
+      break;
   }
 
   for (var i = 0; i < rules.length; i++) {
