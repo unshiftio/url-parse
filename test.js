@@ -149,10 +149,13 @@ describe('url-parse', function () {
   it('prepends / to pathname', function () {
     var url = parse();
 
-    url.set('host', 'example.com:80').set('pathname', 'will/get/slash/prepended');
+    url
+      .set('protocol', 'http')
+      .set('host', 'example.com:80')
+      .set('pathname', 'will/get/slash/prepended');
 
     assume(url.pathname).equals('/will/get/slash/prepended');
-    assume(url.href).equals('example.com:80/will/get/slash/prepended')
+    assume(url.href).equals('http://example.com:80/will/get/slash/prepended')
 
   });
 
