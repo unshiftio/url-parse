@@ -241,7 +241,7 @@ function URL(address, location, parser) {
 URL.prototype.set = function set(part, value, fn) {
   var url = this;
 
-  switch(part) {
+  switch (part) {
     case 'query':
       if ('string' === typeof value && value.length) {
         value = (fn || qs.parse)(value);
@@ -294,7 +294,6 @@ URL.prototype.set = function set(part, value, fn) {
 
     default:
       url[part] = value;
-      break;
   }
 
   for (var i = 0; i < rules.length; i++) {
