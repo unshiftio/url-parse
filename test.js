@@ -20,6 +20,15 @@ describe('url-parse', function () {
     assume(parse.extractProtocol).is.a('function');
   });
 
+  it('it defaults to empty address to return valid URL instance', function () {
+    var url = parse();
+
+    assume(url).to.be.an('object');
+    assume(url.pathname).to.equal('');
+    assume(url.host).to.equal('');
+    assume(url.hostname).to.equal('');
+  });
+
   describe('extractProtocol', function () {
     it('extracts the protocol data', function () {
       assume(parse.extractProtocol('')).eql({
