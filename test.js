@@ -24,9 +24,9 @@ describe('url-parse', function () {
     var url = parse();
 
     assume(url).to.be.an('object');
-    assume(url.pathname).to.equal('');
-    assume(url.host).to.equal('');
-    assume(url.hostname).to.equal('');
+    assume(url.pathname).to.be.a('string');
+    assume(url.host).to.be.a('string');
+    assume(url.hostname).to.be.a('string');
   });
 
   describe('extractProtocol', function () {
