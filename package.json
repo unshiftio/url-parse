@@ -38,7 +38,7 @@
     "browserify": "13.1.x",
     "istanbul": "0.4.x",
     "mocha": "~3.2.0",
-    "pre-commit": "1.1.x",
+    "pre-commit": "~1.2.0",
     "zuul": "3.11.x"
   }
 }
