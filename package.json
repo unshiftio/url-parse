@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "assume": "1.4.x",
-    "browserify": "13.1.x",
+    "browserify": "~13.2.0",
     "istanbul": "0.4.x",
     "mocha": "~3.2.0",
     "pre-commit": "~1.2.0",
