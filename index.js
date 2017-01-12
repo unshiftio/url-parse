@@ -160,7 +160,7 @@ function URL(address, location, parser) {
           address = address.slice(0, index);
         }
       }
-    } else if (index = parse.exec(address)) {
+    } else if ((index = parse.exec(address))) {
       url[key] = index[1];
       address = address.slice(0, index.index);
     }
