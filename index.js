@@ -319,34 +319,37 @@ URL.prototype.set = function set(part, value, fn) {
  * @returns {String}
  * @api public
  */
-Object.defineProperty(URL.prototype, 'toString', {
-  value: function toString(stringify) {
-    if (!stringify || 'function' !== typeof stringify) stringify = qs.stringify;
+function toString(stringify) {
+  if (!stringify || 'function' !== typeof stringify) stringify = qs.stringify;
 
-    var query
-      , url = this
-      , protocol = url.protocol;
+  var query
+    , url = this
+    , protocol = url.protocol;
 
-    if (protocol && protocol.charAt(protocol.length - 1) !== ':') protocol += ':';
+  if (protocol && protocol.charAt(protocol.length - 1) !== ':') protocol += ':';
 
-    var result = protocol + (url.slashes ? '//' : '');
+  var result = protocol + (url.slashes ? '//' : '');
 
-    if (url.username) {
-      result += url.username;
-      if (url.password) result += ':'+ url.password;
-      result += '@';
-    }
-
-    result += url.host + url.pathname;
-
-    query = 'object' === typeof url.query ? stringify(url.query) : url.query;
-    if (query) result += '?' !== query.charAt(0) ? '?'+ query : query;
-
-    if (url.hash) result += url.hash;
-
-    return result;
+  if (url.username) {
+    result += url.username;
+    if (url.password) result += ':'+ url.password;
+    result += '@';
   }
-});
+
+  result += url.host + url.pathname;
+
+  query = 'object' === typeof url.query ? stringify(url.query) : url.query;
+  if (query) result += '?' !== query.charAt(0) ? '?'+ query : query;
+
+  if (url.hash) result += url.hash;
+
+  return result;
+}
+if (Object.defineProperty) {
+  Object.defineProperty(URL.prototype, 'toString', { value: toString });
+} else {
+  URL.prototype.toString = toString;
+}
 
 //
 // Expose the URL parser and some additional properties that might be useful for
