@@ -238,7 +238,7 @@ function URL(address, location, parser) {
  * @returns {URL}
  * @api public
  */
-URL.prototype.set = function set(part, value, fn) {
+function set(part, value, fn) {
   var url = this;
 
   switch (part) {
@@ -346,16 +346,7 @@ function toString(stringify) {
   return result;
 }
 
-if (Object.defineProperty) {
-  Object.defineProperty(URL.prototype, 'toString', { 
-    writable: true,
-    enumerable: true,
-    configurable: true,
-    value: toString
-  });
-} else {
-  URL.prototype.toString = toString;
-}
+URL.prototype = { set: set, toString: toString };
 
 //
 // Expose the URL parser and some additional properties that might be useful for
