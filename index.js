@@ -349,7 +349,7 @@ if (Object.defineProperty) {
   Object.defineProperty(URL.prototype, 'toString', { 
     writable: true,
     enumerable: true,
-    configurable: true
+    configurable: true,
     value: toString
   });
 } else {
