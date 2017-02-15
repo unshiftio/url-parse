@@ -346,7 +346,12 @@ function toString(stringify) {
   return result;
 }
 if (Object.defineProperty) {
-  Object.defineProperty(URL.prototype, 'toString', { value: toString });
+  Object.defineProperty(URL.prototype, 'toString', { 
+    writable: true,
+    enumerable: true,
+    configurable: true
+    value: toString
+  });
 } else {
   URL.prototype.toString = toString;
 }
