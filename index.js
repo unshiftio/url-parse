@@ -345,6 +345,7 @@ function toString(stringify) {
 
   return result;
 }
+
 if (Object.defineProperty) {
   Object.defineProperty(URL.prototype, 'toString', { 
     writable: true,
