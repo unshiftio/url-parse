@@ -30,7 +30,7 @@
   "author": "Arnout Kazemier",
   "license": "MIT",
   "dependencies": {
-    "querystringify": "0.0.x",
+    "querystringify": "~1.0.0",
     "requires-port": "1.0.x"
   },
   "devDependencies": {
