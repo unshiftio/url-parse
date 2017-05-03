@@ -13,7 +13,7 @@ describe('url-parse', function () {
   });
 
   it('exposes the location function', function () {
-    assume(parse.location).equals(require('./lolcation'));
+    assume(parse.location).is.a('function');
   });
 
   it('exposes the extractProtocol function', function () {
