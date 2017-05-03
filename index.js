@@ -310,7 +310,7 @@ function set(part, value, fn) {
   url.href = url.toString();
 
   return url;
-};
+}
 
 /**
  * Transform the properties back in to a valid and full URL string.
