@@ -37,7 +37,7 @@
     "assume": "~1.5.0",
     "browserify": "~14.4.0",
     "istanbul": "0.4.x",
-    "mocha": "~3.4.1",
+    "mocha": "~3.5.0",
     "pre-commit": "~1.2.0",
     "zuul": "3.11.x"
   }
