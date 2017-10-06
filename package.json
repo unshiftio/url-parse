@@ -9,6 +9,10 @@
     "test-browser": "node test/browser.js",
     "watch": "mocha --watch test/test.js"
   },
+  "files": [
+    "index.js",
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/unshiftio/url-parse.git"
