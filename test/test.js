@@ -2,7 +2,7 @@ describe('url-parse', function () {
   'use strict';
 
   var assume = require('assume')
-    , parse = require('./');
+    , parse = require('../');
 
   it('exposes parse as a function', function () {
     assume(parse).is.a('function');

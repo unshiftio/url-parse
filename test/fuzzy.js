@@ -1,6 +1,6 @@
 'use strict';
 
-var URL = require('./')
+var URL = require('../')
   , url = new URL('//');
 
 /**
