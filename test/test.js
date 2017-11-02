@@ -20,7 +20,7 @@ describe('url-parse', function () {
     assume(parse.extractProtocol).is.a('function');
   });
 
-  it('it defaults to empty address to return valid URL instance', function () {
+  it('defaults to empty address to return valid URL instance', function () {
     var url = parse();
 
     assume(url).to.be.an('object');
@@ -153,19 +153,6 @@ describe('url-parse', function () {
     assume(parsed.host).equals('example.com');
     assume(parsed.hostname).equals('example.com');
     assume(parsed.href).equals('http://example.com/');
-  });
-
-  it('prepends / to pathname', function () {
-    var url = parse();
-
-    url
-      .set('protocol', 'http')
-      .set('host', 'example.com:80')
-      .set('pathname', 'will/get/slash/prepended');
-
-    assume(url.pathname).equals('/will/get/slash/prepended');
-    assume(url.href).equals('http://example.com:80/will/get/slash/prepended')
-
   });
 
   it('does not care about spaces', function () {
@@ -572,6 +559,28 @@ describe('url-parse', function () {
       assume(data.href).equals('http://[7886:3423::1233]:443/foo');
     });
 
+    it('prepends / to pathname', function () {
+      var url = parse();
+
+      url
+        .set('protocol', 'http')
+        .set('host', 'example.com:80')
+        .set('pathname', 'will/get/slash/prepended');
+
+      assume(url.pathname).equals('/will/get/slash/prepended');
+      assume(url.href).equals('http://example.com:80/will/get/slash/prepended');
+
+      url.set('pathname', '');
+
+      assume(url.pathname).equals('');
+      assume(url.href).equals('http://example.com:80');
+
+      url.set('pathname', '/has/slash');
+
+      assume(url.pathname).equals('/has/slash');
+      assume(url.href).equals('http://example.com:80/has/slash');
+    });
+
     it('updates query with object', function () {
       var data = parse('http://google.com/?foo=bar');
 
@@ -622,6 +631,20 @@ describe('url-parse', function () {
       // `data` is unchanged.
       //
       assume(data.href).equals('http://google.com/?foo=bar');
+    });
+
+    it('prepends # to hash', function () {
+      var data = parse('http://example.com');
+
+      data.set('hash', 'usage');
+
+      assume(data.hash).equals('#usage');
+      assume(data.href).equals('http://example.com#usage');
+
+      data.set('hash', '#license');
+
+      assume(data.hash).equals('#license');
+      assume(data.href).equals('http://example.com#license');
     });
 
     it('updates the port when updating host', function () {
@@ -701,8 +724,12 @@ describe('url-parse', function () {
 
       assume(data.set('protocol', 'https:')).equals(data);
       assume(data.protocol).equals('https:');
-
       assume(data.href).equals('https://google.com/?foo=bar');
+
+      data.set('username', 'foo');
+
+      assume(data.username).equals('foo');
+      assume(data.href).equals('https://foo@google.com/?foo=bar');
     });
 
     it('lowercases the required values', function () {
