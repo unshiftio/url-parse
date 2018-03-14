@@ -36,7 +36,7 @@
     "requires-port": "~1.0.0"
   },
   "devDependencies": {
-    "assume": "~1.5.0",
+    "assume": "~2.0.0",
     "browserify": "~16.1.0",
     "mocha": "~5.0.0",
     "nyc": "~11.6.0",
