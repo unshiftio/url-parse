@@ -4,10 +4,11 @@
   "description": "Small footprint URL parser that works seamlessly across Node.js and browser environments",
   "main": "index.js",
   "scripts": {
-    "browserify": "mkdir -p dist && browserify index.js -s URLParse | uglifyjs -cm -o dist/url-parse.min.js",
+    "browserify": "rm -rf dist && mkdir -p dist && browserify index.js -s URLParse -o dist/url-parse.js",
+    "minify": "uglifyjs dist/url-parse.js --source-map -cm -o dist/url-parse.min.js",
     "test": "nyc --reporter=html --reporter=text mocha test/test.js",
     "test-browser": "node test/browser.js",
-    "prepublishOnly": "npm run browserify",
+    "prepublishOnly": "npm run browserify && npm run minify",
     "watch": "mocha --watch test/test.js"
   },
   "files": [
