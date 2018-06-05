@@ -29,7 +29,7 @@ describe('url-parse', function () {
     assume(url.hostname).to.be.a('string');
   });
 
-  it('parse when global variable is undefined', function () {
+  it('works when the global variable is not defined', function () {
     var globalVar = global;
     global = undefined;
     var url = parse('http://google.com/?foo=bar', true);
