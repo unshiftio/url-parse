@@ -29,6 +29,19 @@ describe('url-parse', function () {
     assume(url.hostname).to.be.a('string');
   });
 
+  it('parse when global variable is undefined', function () {
+    var globalVar = global;
+    global = undefined;
+    var url = parse('http://google.com/?foo=bar', true);
+
+    assume(url).to.be.an('object');
+    assume(url.pathname).to.be.a('string');
+    assume(url.host).to.be.a('string');
+    assume(url.hostname).to.be.a('string');
+
+    global = globalVar;
+  });
+
   describe('extractProtocol', function () {
     it('extracts the protocol data', function () {
       assume(parse.extractProtocol('')).eql({
