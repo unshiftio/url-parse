@@ -278,7 +278,7 @@ describe('url-parse', function () {
     it('maintains the port number for non-default port numbers', function () {
       var parsed = parse('http://google.com:8080/pathname');
 
-      assume(parsed.host).equals('http://google.com:8080');
+      assume(parsed.host).equals('google.com:8080');
       assume(parsed.href).equals('http://google.com:8080/pathname');
     });
   });
