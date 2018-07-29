@@ -8,8 +8,8 @@ emails that do not include security vulnerabilities will be removed and blocked
 instantly.
 
 In addition to a dedicated email address to receive security related reports,
-we also have a [Hacker1 account][hacker1] that can be used be used for
-communicating security related issues.
+we also have a [Hacker1 account][hacker1] that can be used for communicating
+security related issues.
 
 You will receive an acknowledgement of your report within **24 hours** of
 notification.
