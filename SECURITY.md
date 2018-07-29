@@ -36,8 +36,11 @@ acknowledge your responsible disclosure, if you wish.
 > url-parse returns wrong hostname which leads to multiple vulnerabilities such
 > as SSRF, Open Redirect, Bypass Authentication Protocol.
 
+- **Reporter credits**
+  - Hacker1: [lolwaleet](https://hackerone.com/lolwalee)
+  - Twitter: [@ahm3dsec](https://twitter.com/ahm3dsec)
+  - Blog: [0xahmed.ninja](https://0xahmed.ninja)
 - Hacker1 report: https://hackerone.com/reports/384029
-- Reported by [lolwaleet](https://hackerone.com/lolwalee)
 - Triaged by [Liran Tal](https://hackerone.com/lirantal)
 - Fixed in: 1.4.3
 
