@@ -192,6 +192,28 @@ describe('url-parse', function () {
     assume(parsed.pathname).equals('/b/c');
   });
 
+  it('ignores \\ in pathnames', function () {
+    var url = 'http://google.com:80\\@yahoo.com/#what\\is going on'
+      , parsed = parse(url);
+
+    assume(parsed.port).equals('');
+    assume(parsed.username).equals('');
+    assume(parsed.password).equals('');
+    assume(parsed.hostname).equals('google.com');
+    assume(parsed.hash).equals('#what\\is going on');
+
+    parsed = parse('//\\what-is-up.com');
+    assume(parsed.pathname).equals('/what-is-up.com');
+  });
+
+  it('correctly ignores multiple slashes //', function () {
+    var url = '////what-is-up.com'
+      , parsed = parse(url);
+
+    assume(parsed.host).equals('');
+    assume(parsed.hostname).equals('');
+  });
+
   describe('origin', function () {
     it('generates an origin property', function () {
       var url = 'http://google.com:80/pathname'
@@ -251,6 +273,13 @@ describe('url-parse', function () {
 
       o = parse('wss://google.com:80/pathname');
       assume(o.origin).equals('wss://google.com:80');
+    });
+
+    it('maintains the port number for non-default port numbers', function () {
+      var parsed = parse('http://google.com:8080/pathname');
+
+      assume(parsed.host).equals('http://google.com:8080');
+      assume(parsed.href).equals('http://google.com:8080/pathname');
     });
   });
 
