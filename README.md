@@ -38,14 +38,14 @@ All examples assume that this library is bootstrapped using:
 ```js
 'use strict';
 
-var URL = require('url-parse');
+var Url = require('url-parse');
 ```
 
 To parse an URL simply call the `URL` method with the URL that needs to be
 transformed into an object.
 
 ```js
-var url = new URL('https://github.com/foo/bar');
+var url = new Url('https://github.com/foo/bar');
 ```
 
 The `new` keyword is optional but it will save you an extra function invocation.
