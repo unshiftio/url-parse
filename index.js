@@ -53,7 +53,8 @@ var ignore = { hash: 1, query: 1 };
  * @public
  */
 function lolcation(loc) {
-  var location = global && global.location || {};
+  var globalVar = typeof window !== 'undefined' && typeof global === 'undefined' ? window : global;
+  var location = globalVar && globalVar.location || {};
   loc = loc || location;
 
   var finaldestination = {}
