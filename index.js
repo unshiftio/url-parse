@@ -63,7 +63,7 @@ function lolcation(loc) {
     globalVar = self;
   else
     globalVar = {};
-  var location = globalVar && globalVar.location || {};
+  var location = globalVar.location || {};
   loc = loc || location;
 
   var finaldestination = {}
