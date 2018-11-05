@@ -55,14 +55,11 @@ var ignore = { hash: 1, query: 1 };
 function lolcation(loc) {
   var globalVar;
 
-  if (typeof window !== 'undefined')
-    globalVar = window;
-  else if (typeof global !== 'undefined')
-    globalVar = global;
-  else if (typeof self !== 'undefined')
-    globalVar = self;
-  else
-    globalVar = {};
+  if (typeof window !== 'undefined') globalVar = window;
+  else if (typeof global !== 'undefined') globalVar = global;
+  else if (typeof self !== 'undefined') globalVar = self;
+  else globalVar = {};
+
   var location = globalVar.location || {};
   loc = loc || location;
 
