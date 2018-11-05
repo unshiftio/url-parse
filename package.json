@@ -1,6 +1,6 @@
 {
   "name": "url-parse",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Small footprint URL parser that works seamlessly across Node.js and browser environments",
   "main": "index.js",
   "scripts": {
