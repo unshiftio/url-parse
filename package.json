@@ -39,7 +39,7 @@
   "devDependencies": {
     "assume": "^1.5.2",
     "browserify": "^16.2.0",
-    "mocha": "^5.1.1",
+    "mocha": "^6.0.0",
     "nyc": "^13.2.0",
     "pre-commit": "^1.2.0",
     "sauce-browsers": "^2.0.0",
