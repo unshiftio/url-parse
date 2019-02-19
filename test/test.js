@@ -497,6 +497,7 @@ describe('url-parse', function () {
       var tests = [
         ['', 'http://foo.com', ''],
         ['', 'http://foo.com/', '/'],
+        ['', 'http://foo.com/a', '/a'],
         ['a', 'http://foo.com', '/a'],
         ['a/', 'http://foo.com', '/a/'],
         ['b/c', 'http://foo.com/a', '/b/c'],
