@@ -33,6 +33,16 @@ acknowledge your responsible disclosure, if you wish.
 
 ## History
 
+> The `extractProtocol` method does not return the correct protocol when
+> provided with unsanitized content which could lead to false positives.
+
+- **Reporter credits**
+  - Reported through our security email & Twitter interaction.
+  - Twitter: [@ronperris](https://twitter.com/ronperris)
+  - Fixed in: 1.4.5
+
+---
+
 > url-parse returns wrong hostname which leads to multiple vulnerabilities such
 > as SSRF, Open Redirect, Bypass Authentication Protocol.
 
