@@ -56,9 +56,9 @@ describe('url-parse', function () {
       // When users pass in `window.location` it's not an actual string
       // so you can't replace on it. So it needs to be cast to a string.
       //
-      const fake = {
-        toString() {
-          return 'wat'
+      var fake = {
+        toString: function () {
+          return 'wat';
         }
       };
 
