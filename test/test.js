@@ -42,6 +42,30 @@ describe('url-parse', function () {
     global = globalVar;
   });
 
+  describe('trimLeft', function () {
+    it('is a function', function () {
+      assume(parse.trimLeft).is.a('function');
+    });
+
+    it('removes whitespace on the left', function () {
+      assume(parse.trimLeft('  lol')).equals('lol');
+    });
+
+    it('calls toString on a given value', function () {
+      //
+      // When users pass in `window.location` it's not an actual string
+      // so you can't replace on it. So it needs to be cast to a string.
+      //
+      const fake = {
+        toString() {
+          return 'wat'
+        }
+      };
+
+      assume(parse.trimLeft(fake)).equals('wat');
+    });
+  });
+
   describe('extractProtocol', function () {
     it('extracts the protocol data', function () {
       assume(parse.extractProtocol('http://example.com')).eql({
