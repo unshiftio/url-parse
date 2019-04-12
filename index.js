@@ -14,7 +14,7 @@ var required = require('requires-port')
  * @public
  */
 function trimLeft(str) {
-  return (str || '').replace(left, '');
+  return (str ? str.toString() : '').replace(left, '');
 }
 
 /**
