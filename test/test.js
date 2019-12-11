@@ -114,6 +114,10 @@ describe('url-parse', function () {
 
     assume(data.query).is.a('object');
     assume(data.query).is.empty();
+
+    url = 'http://google.com?email=me+her@love.com';
+    assume(data.query).is.a('object');
+    assume(data.query.email).equals('me+her@love.com');
   });
 
   it('does not add question mark to href if query string is empty', function () {
