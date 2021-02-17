@@ -103,6 +103,8 @@ module.exports = function generate() {
     , key;
 
   spec.protocol = get('protocol');
+  spec.slashes = true;
+  
   spec.hostname = get('hostname');
   spec.pathname = get('pathname');
 
