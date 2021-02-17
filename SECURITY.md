@@ -33,13 +33,22 @@ acknowledge your responsible disclosure, if you wish.
 
 ## History
 
+> Using backslash in the protocol is valid in the browser, while url-parse
+> thinks it’s a relative path. An application that validates a url using
+> url-parse might pass a malicious link.
+
+- **Reporter credits**
+  - CxSCA AppSec team at Checkmarx.
+  - Twitter: [Yaniv Nizry](https://twitter.com/ynizry)
+- Fixed in: 1.5.0
+
 > The `extractProtocol` method does not return the correct protocol when
 > provided with unsanitized content which could lead to false positives.
 
 - **Reporter credits**
   - Reported through our security email & Twitter interaction.
   - Twitter: [@ronperris](https://twitter.com/ronperris)
-  - Fixed in: 1.4.5
+- Fixed in: 1.4.5
 
 ---
 
