@@ -249,10 +249,10 @@ describe('url-parse', function () {
 
   it('correctly ignores multiple slashes //', function () {
     var url = '////what-is-up.com'
-      , parsed = parse(url);
+      , parsed = parse(url, parse('http://google.com'));
 
     assume(parsed.host).equals('what-is-up.com');
-    assume(parsed.href).equals('//what-is-up.com/');
+    assume(parsed.href).equals('http://what-is-up.com/');
   });
 
   it('does not see a slash after the protocol as path', function () {
