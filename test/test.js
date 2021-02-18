@@ -83,6 +83,20 @@ describe('url-parse', function () {
       });
     });
 
+    it('correctly resolves paths', function () {
+      assume(parse.extractProtocol('/foo')).eql({
+        slashes: false,
+        protocol: '',
+        rest: '/foo'
+      });
+
+      assume(parse.extractProtocol('//foo/bar')).eql({
+        slashes: true,
+        protocol: '',
+        rest: 'foo/bar'
+      });
+    });
+
     it('does not truncate the input string', function () {
       var input = 'foo\nbar\rbaz\u2028qux\u2029';
 
@@ -207,6 +221,20 @@ describe('url-parse', function () {
     assume(parsed.host).equals('example.com');
     assume(parsed.hostname).equals('example.com');
     assume(parsed.href).equals('http://example.com/');
+  });
+
+  it('correctly parses pathnames for relative paths', function () {
+    var url = '/dataApi/PROD/ws'
+     , parsed = parse(url, 'http://localhost:3000/PROD/trends');
+
+    assume(parsed.pathname).equals('/dataApi/PROD/ws');
+
+    url = '/sections/?project=default'
+    parsed = parse(url, 'http://example.com/foo/bar');
+
+    assume(parsed.pathname).equals('/sections/');
+    assume(parsed.hostname).equals('example.com');
+    assume(parsed.href).equals('http://example.com/sections/?project=default');
   });
 
   it('does not care about spaces', function () {
