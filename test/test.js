@@ -83,6 +83,20 @@ describe('url-parse', function () {
       });
     });
 
+    it('correctly resolves paths', function () {
+      assume(parse.extractProtocol('/foo')).eql({
+        slashes: false,
+        protocol: '',
+        rest: '/foo'
+      });
+
+      assume(parse.extractProtocol('//foo/bar')).eql({
+        slashes: true,
+        protocol: '',
+        rest: 'foo/bar'
+      });
+    });
+
     it('does not truncate the input string', function () {
       var input = 'foo\nbar\rbaz\u2028qux\u2029';
 
@@ -211,7 +225,7 @@ describe('url-parse', function () {
 
   it('correctly parses pathnames for relative paths', function () {
     var url = '/dataApi/PROD/ws'
-    , parsed = parse(url, 'http://localhost:3000/PROD/trends');
+     , parsed = parse(url, 'http://localhost:3000/PROD/trends');
 
     assume(parsed.pathname).equals('/dataApi/PROD/ws');
 
