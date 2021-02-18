@@ -209,6 +209,20 @@ describe('url-parse', function () {
     assume(parsed.href).equals('http://example.com/');
   });
 
+  it('correctly parses pathnames for relative paths', function () {
+    var url = '/dataApi/PROD/ws'
+    , parsed = parse(url, 'http://localhost:3000/PROD/trends');
+
+    assume(parsed.pathname).equals('/dataApi/PROD/ws');
+
+    url = '/sections/?project=default'
+    parsed = parse(url, 'http://example.com/foo/bar');
+
+    assume(parsed.pathname).equals('/sections/');
+    assume(parsed.hostname).equals('example.com');
+    assume(parsed.href).equals('http://example.com/sections/?project=default');
+  });
+
   it('does not care about spaces', function () {
     var url = 'http://x.com/path?that\'s#all, folks'
       , parsed = parse(url);

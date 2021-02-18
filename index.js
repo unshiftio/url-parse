@@ -118,12 +118,13 @@ function extractProtocol(address) {
 
   var match = protocolre.exec(address)
     , protocol = match[1] ? match[1].toLowerCase() : ''
-    , slashes = !!(match[2] && match[2].length >= 2);
+    , slashes = !!(match[2] && match[2].length >= 2)
+    , rest =  match[2] && match[2].length === 1 ? '/' + match[3] : match[3];
 
   return {
     protocol: protocol,
     slashes: slashes,
-    rest: match[3]
+    rest: rest
   };
 }
 
