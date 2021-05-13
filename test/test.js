@@ -291,7 +291,7 @@ describe('url-parse', function () {
     assume(parsed.hostname).equals('github.com');
     assume(parsed.pathname).equals('/foo/bar');
 
-    url = 'https:/\/\/\github.com/foo/bar';
+    url = 'https:/\\/\\/\\github.com/foo/bar';
     assume(parsed.host).equals('github.com');
     assume(parsed.hostname).equals('github.com');
     assume(parsed.pathname).equals('/foo/bar');
