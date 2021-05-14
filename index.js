@@ -33,7 +33,7 @@ var rules = [
   ['#', 'hash'],                        // Extract from the back.
   ['?', 'query'],                       // Extract from the back.
   function sanitize(address) {          // Sanitize what is left of the address
-    return address.replace('\\', '/');
+    return address.replace(/\\/g, '/');
   },
   ['/', 'pathname'],                    // Extract from the back.
   ['@', 'auth', 1],                     // Extract from the front.
@@ -224,7 +224,9 @@ function Url(address, location, parser) {
   // When the authority component is absent the URL starts with a path
   // component.
   //
-  if (!extracted.slashes) instructions[3] = [/(.*)/, 'pathname'];
+  if (!extracted.slashes || url.protocol === 'file:') {
+    instructions[3] = [/(.*)/, 'pathname'];
+  }
 
   for (; i < instructions.length; i++) {
     instruction = instructions[i];
@@ -288,7 +290,10 @@ function Url(address, location, parser) {
   // Default to a / for pathname if none exists. This normalizes the URL
   // to always have a /
   //
-  if (url.pathname.charAt(0) !== '/' && url.hostname) {
+  if (
+      url.pathname.charAt(0) !== '/'
+    && (url.hostname || url.protocol === 'file:')
+  ) {
     url.pathname = '/' + url.pathname;
   }
 
@@ -430,7 +435,7 @@ function toString(stringify) {
 
   if (protocol && protocol.charAt(protocol.length - 1) !== ':') protocol += ':';
 
-  var result = protocol + (url.slashes ? '//' : '');
+  var result = protocol + (url.slashes || url.protocol === 'file:' ? '//' : '');
 
   if (url.username) {
     result += url.username;
