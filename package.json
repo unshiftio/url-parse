@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "assume": "^2.2.0",
-    "browserify": "^16.2.3",
+    "browserify": "^17.0.0",
     "c8": "^7.3.1",
     "coveralls": "^3.1.0",
     "mocha": "^8.0.1",
