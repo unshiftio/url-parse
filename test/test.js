@@ -438,6 +438,48 @@ describe('url-parse', function () {
       data.set('protocol', 'https:');
       assume(data.href).equals('https://google.com/foo');
     });
+
+    it('handles the file: protocol', function () {
+      var slashes = ['', '/', '//', '///', '////', '/////'];
+      var data;
+      var url;
+
+      for (var i = 0; i < slashes.length; i++) {
+        data = parse('file:' + slashes[i]);
+        assume(data.protocol).equals('file:');
+        assume(data.pathname).equals('/');
+        assume(data.href).equals('file:///');
+      }
+
+      url = 'file:///Users/foo/BAR/baz.pdf';
+      data = parse(url);
+      assume(data.protocol).equals('file:');
+      assume(data.pathname).equals('/Users/foo/BAR/baz.pdf');
+      assume(data.href).equals(url);
+
+      url = 'file:///foo/bar?baz=qux#hash';
+      data = parse(url);
+      assume(data.protocol).equals('file:');
+      assume(data.hash).equals('#hash');
+      assume(data.query).equals('?baz=qux');
+      assume(data.pathname).equals('/foo/bar');
+      assume(data.href).equals(url);
+
+      data = parse('file://c:\\foo\\bar\\');
+      assume(data.protocol).equals('file:');
+      assume(data.pathname).equals('/c:/foo/bar/');
+      assume(data.href).equals('file:///c:/foo/bar/');
+
+      data = parse('foo/bar', 'file:///baz');
+      assume(data.protocol).equals('file:');
+      assume(data.pathname).equals('/foo/bar');
+      assume(data.href).equals('file:///foo/bar');
+
+      data = parse('foo/bar', 'file:///baz/');
+      assume(data.protocol).equals('file:');
+      assume(data.pathname).equals('/baz/foo/bar');
+      assume(data.href).equals('file:///baz/foo/bar');
+    });
   });
 
   describe('ip', function () {
