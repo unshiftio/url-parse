@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node:
+          - 12
+          - 14
+          - 16
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install
+      - run: npm test
+      - uses: coverallsapp/github-action@v1.1.2
+        if: matrix.node == 12
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+  test-browser:
+    runs-on: ubuntu-latest
+    env:
+      SAUCE_USERNAME: url-parse
+      SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - run: npm install
+      - run: npm run test-browser
