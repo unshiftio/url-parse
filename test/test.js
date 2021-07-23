@@ -311,7 +311,7 @@ describe('url-parse', function () {
   });
 
   it('does not see a slash after the protocol as path', function () {
-    var url = 'https:\\github.com/foo/bar'
+    var url = 'https:\\/github.com/foo/bar'
       , parsed = parse(url);
 
     assume(parsed.host).equals('github.com');
