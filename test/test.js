@@ -75,6 +75,22 @@ describe('url-parse', function () {
       });
     });
 
+    it('corrects a single forward slash to double slash', function () {
+      assume(parse.extractProtocol('https:/github.com/foo/bar')).eql({
+        slashes: true,
+        protocol: 'https:',
+        rest: 'github.com/foo/bar'
+      });
+    });
+
+    it('corrects a single backward slash to double slash', function () {
+      assume(parse.extractProtocol('https:\\github.com/foo/bar')).eql({
+        slashes: true,
+        protocol: 'https:',
+        rest: 'github.com/foo/bar'
+      });
+    });
+
     it('extracts the protocol data for nothing', function () {
       assume(parse.extractProtocol('')).eql({
         slashes: false,
@@ -283,8 +299,19 @@ describe('url-parse', function () {
     assume(parsed.href).equals('http://what-is-up.com/');
   });
 
+  it('does not see a single backslash as after protocol as path', function () {
+    var url = 'https:/github.com/foo/bar'
+      , parsed = parse(url);
+
+    assume(parsed.host).equals('github.com');
+    assume(parsed.hostname).equals('github.com');
+    assume(parsed.pathname).equals('/foo/bar');
+
+    assume(parsed.href).equals('https://github.com/foo/bar');
+  });
+
   it('does not see a slash after the protocol as path', function () {
-    var url = 'https:\\/github.com/foo/bar'
+    var url = 'https:\\github.com/foo/bar'
       , parsed = parse(url);
 
     assume(parsed.host).equals('github.com');
