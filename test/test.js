@@ -395,6 +395,13 @@ describe('url-parse', function () {
       assume(parsed.origin).equals('null');
     });
 
+    it('is null for non special URLs', function () {
+      var o = parse('foo://example.com/pathname');
+      assume(o.hostname).equals('example.com');
+      assume(o.pathname).equals('/pathname');
+      assume(o.origin).equals('null');
+    });
+
     it('removes default ports for http', function () {
       var o = parse('http://google.com:80/pathname');
       assume(o.origin).equals('http://google.com');
