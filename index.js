@@ -347,10 +347,7 @@ function Url(address, location, parser) {
   // Default to a / for pathname if none exists. This normalizes the URL
   // to always have a /
   //
-  if (
-      url.pathname.charAt(0) !== '/'
-    && (url.hostname || url.protocol === 'file:')
-  ) {
+  if (url.pathname.charAt(0) !== '/' && isSpecial(url.protocol)) {
     url.pathname = '/' + url.pathname;
   }
 

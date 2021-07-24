@@ -361,8 +361,8 @@ describe('url-parse', function () {
     url = 'foo://example.com';
     parsed = parse(url);
     assume(parsed.hostname).equals('example.com');
-    assume(parsed.pathname).equals('/');
-    assume(parsed.href).equals('foo://example.com/');
+    assume(parsed.pathname).equals('');
+    assume(parsed.href).equals('foo://example.com');
     assume(parsed.slashes).is.true();
 
     url = 'foo:///example.com';
