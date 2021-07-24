@@ -71,7 +71,8 @@ describe('url-parse', function () {
       assume(parse.extractProtocol('http://example.com')).eql({
         slashes: true,
         protocol: 'http:',
-        rest: 'example.com'
+        rest: 'example.com',
+        slashesCount: 2
       });
     });
 
@@ -79,7 +80,8 @@ describe('url-parse', function () {
       assume(parse.extractProtocol('')).eql({
         slashes: false,
         protocol: '',
-        rest: ''
+        rest: '',
+        slashesCount: 0
       });
     });
 
@@ -87,13 +89,15 @@ describe('url-parse', function () {
       assume(parse.extractProtocol('/foo')).eql({
         slashes: false,
         protocol: '',
-        rest: '/foo'
+        rest: '/foo',
+        slashesCount: 1
       });
 
       assume(parse.extractProtocol('//foo/bar')).eql({
         slashes: true,
         protocol: '',
-        rest: '//foo/bar'
+        rest: '//foo/bar',
+        slashesCount: 2
       });
     });
 
@@ -103,7 +107,8 @@ describe('url-parse', function () {
       assume(parse.extractProtocol(input)).eql({
         slashes: false,
         protocol: '',
-        rest: input
+        rest: input,
+        slashesCount: 0
       });
     });
 
@@ -111,7 +116,8 @@ describe('url-parse', function () {
       assume(parse.extractProtocol(' javascript://foo')).eql({
         slashes: true,
         protocol: 'javascript:',
-        rest: 'foo'
+        rest: 'foo',
+        slashesCount: 2
       });
     });
   });
@@ -281,6 +287,12 @@ describe('url-parse', function () {
 
     assume(parsed.host).equals('what-is-up.com');
     assume(parsed.href).equals('http://what-is-up.com/');
+
+    url = '\\\\\\\\what-is-up.com'
+    parsed = parse(url, parse('http://google.com'));
+
+    assume(parsed.host).equals('what-is-up.com');
+    assume(parsed.href).equals('http://what-is-up.com/');
   });
 
   it('ignores slashes after the protocol for special URLs', function () {
@@ -290,32 +302,44 @@ describe('url-parse', function () {
     assume(parsed.host).equals('github.com');
     assume(parsed.hostname).equals('github.com');
     assume(parsed.pathname).equals('/foo/bar');
+    assume(parsed.slashes).is.true();
+    assume(parsed.href).equals('https://github.com/foo/bar');
 
     url = 'https:/\\/\\/\\github.com/foo/bar';
     parsed = parse(url);
     assume(parsed.host).equals('github.com');
     assume(parsed.hostname).equals('github.com');
     assume(parsed.pathname).equals('/foo/bar');
+    assume(parsed.slashes).is.true();
+    assume(parsed.href).equals('https://github.com/foo/bar');
 
     url = 'https:/github.com/foo/bar';
     parsed = parse(url);
     assume(parsed.host).equals('github.com');
     assume(parsed.pathname).equals('/foo/bar');
+    assume(parsed.slashes).is.true();
+    assume(parsed.href).equals('https://github.com/foo/bar');
 
     url = 'https:\\github.com/foo/bar';
     parsed = parse(url);
     assume(parsed.host).equals('github.com');
     assume(parsed.pathname).equals('/foo/bar');
+    assume(parsed.slashes).is.true();
+    assume(parsed.href).equals('https://github.com/foo/bar');
 
     url = 'https:github.com/foo/bar';
     parsed = parse(url);
     assume(parsed.host).equals('github.com');
     assume(parsed.pathname).equals('/foo/bar');
+    assume(parsed.slashes).is.true();
+    assume(parsed.href).equals('https://github.com/foo/bar');
 
     url = 'https:github.com/foo/bar';
     parsed = parse(url);
     assume(parsed.host).equals('github.com');
     assume(parsed.pathname).equals('/foo/bar');
+    assume(parsed.slashes).is.true();
+    assume(parsed.href).equals('https://github.com/foo/bar');
   });
 
   it('handles slashes after the protocol for non special URLs', function () {
@@ -325,24 +349,28 @@ describe('url-parse', function () {
     assume(parsed.hostname).equals('');
     assume(parsed.pathname).equals('example.com');
     assume(parsed.href).equals('foo:example.com');
+    assume(parsed.slashes).is.false();
 
     url = 'foo:/example.com';
     parsed = parse(url);
     assume(parsed.hostname).equals('');
     assume(parsed.pathname).equals('/example.com');
     assume(parsed.href).equals('foo:/example.com');
+    assume(parsed.slashes).is.false();
 
     url = 'foo://example.com';
     parsed = parse(url);
     assume(parsed.hostname).equals('example.com');
     assume(parsed.pathname).equals('/');
     assume(parsed.href).equals('foo://example.com/');
+    assume(parsed.slashes).is.true();
 
     url = 'foo:///example.com';
     parsed = parse(url);
     assume(parsed.hostname).equals('');
     assume(parsed.pathname).equals('/example.com');
     assume(parsed.href).equals('foo:///example.com');
+    assume(parsed.slashes).is.true();
   })
 
   describe('origin', function () {
