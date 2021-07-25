@@ -358,6 +358,13 @@ describe('url-parse', function () {
     assume(parsed.href).equals('foo:/example.com');
     assume(parsed.slashes).is.false();
 
+    url = 'foo:\\example.com';
+    parsed = parse(url);
+    assume(parsed.hostname).equals('');
+    assume(parsed.pathname).equals('\\example.com');
+    assume(parsed.href).equals('foo:\\example.com');
+    assume(parsed.slashes).is.false();
+
     url = 'foo://example.com';
     parsed = parse(url);
     assume(parsed.hostname).equals('example.com');
@@ -365,13 +372,34 @@ describe('url-parse', function () {
     assume(parsed.href).equals('foo://example.com');
     assume(parsed.slashes).is.true();
 
+    url = 'foo:\\\\example.com';
+    parsed = parse(url);
+    assume(parsed.hostname).equals('');
+    assume(parsed.pathname).equals('\\\\example.com');
+    assume(parsed.href).equals('foo:\\\\example.com');
+    assume(parsed.slashes).is.false();
+
     url = 'foo:///example.com';
     parsed = parse(url);
     assume(parsed.hostname).equals('');
     assume(parsed.pathname).equals('/example.com');
     assume(parsed.href).equals('foo:///example.com');
     assume(parsed.slashes).is.true();
-  })
+
+    url = 'foo:\\\\\\example.com';
+    parsed = parse(url);
+    assume(parsed.hostname).equals('');
+    assume(parsed.pathname).equals('\\\\\\example.com');
+    assume(parsed.href).equals('foo:\\\\\\example.com');
+    assume(parsed.slashes).is.false();
+
+    url = '\\\\example.com/foo/bar';
+    parsed = parse(url, 'foo://bar.com');
+    assume(parsed.hostname).equals('bar.com');
+    assume(parsed.pathname).equals('/\\\\example.com/foo/bar');
+    assume(parsed.href).equals('foo://bar.com/\\\\example.com/foo/bar');
+    assume(parsed.slashes).is.true();
+  });
 
   describe('origin', function () {
     it('generates an origin property', function () {

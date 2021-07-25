@@ -32,8 +32,8 @@ function trimLeft(str) {
 var rules = [
   ['#', 'hash'],                        // Extract from the back.
   ['?', 'query'],                       // Extract from the back.
-  function sanitize(address) {          // Sanitize what is left of the address
-    return address.replace(/\\/g, '/');
+  function sanitize(address, url) {     // Sanitize what is left of the address
+    return isSpecial(url.protocol) ? address.replace(/\\/g, '/') : address;
   },
   ['/', 'pathname'],                    // Extract from the back.
   ['@', 'auth', 1],                     // Extract from the front.
@@ -170,7 +170,7 @@ function extractProtocol(address, location) {
     if (forwardSlashes) {
       rest = rest.slice(2);
     }
-  } else if (slashesCount >= 2 && location.hostname) {
+  } else if (slashesCount >= 2 && isSpecial(location.protocol)) {
     rest = match[4];
   }
 
@@ -280,7 +280,10 @@ function Url(address, location, parser) {
   //
   if (
     url.protocol === 'file:' ||
-    (extracted.slashesCount < 2 && !isSpecial(extracted.protocol))
+    (!extracted.slashes &&
+      (extracted.protocol ||
+        extracted.slashesCount < 2 ||
+        !isSpecial(url.protocol)))
   ) {
     instructions[3] = [/(.*)/, 'pathname'];
   }
@@ -289,7 +292,7 @@ function Url(address, location, parser) {
     instruction = instructions[i];
 
     if (typeof instruction === 'function') {
-      address = instruction(address);
+      address = instruction(address, url);
       continue;
     }
 
