@@ -593,6 +593,13 @@ describe('url-parse', function () {
       assume(data.pathname).equals('/c:/foo/bar/');
       assume(data.href).equals('file:///c:/foo/bar/');
 
+      data = parse('file://host/file');
+      assume(data.protocol).equals('file:');
+      assume(data.host).equals('host');
+      assume(data.hostname).equals('host');
+      assume(data.pathname).equals('/file');
+      assume(data.href).equals('file://host/file');
+
       data = parse('foo/bar', 'file:///baz');
       assume(data.protocol).equals('file:');
       assume(data.pathname).equals('/foo/bar');
