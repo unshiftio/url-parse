@@ -4,6 +4,7 @@ var required = require('requires-port')
   , qs = require('querystringify')
   , slashes = /^[A-Za-z][A-Za-z0-9+-.]*:\/\//
   , protocolre = /^([a-z][a-z0-9.+-]*:)?(\/\/)?([\\/]+)?([\S\s]*)/i
+  , windowsDriveLetter = /^[a-zA-Z]:/
   , whitespace = '[\\x09\\x0A\\x0B\\x0C\\x0D\\x20\\xA0\\u1680\\u180E\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u202F\\u205F\\u3000\\u2028\\u2029\\uFEFF]'
   , left = new RegExp('^'+ whitespace +'+');
 
@@ -279,7 +280,8 @@ function Url(address, location, parser) {
   // component.
   //
   if (
-    url.protocol === 'file:' ||
+    extracted.protocol === 'file:' && (
+      extracted.slashesCount !== 2 || windowsDriveLetter.test(address)) ||
     (!extracted.slashes &&
       (extracted.protocol ||
         extracted.slashesCount < 2 ||
