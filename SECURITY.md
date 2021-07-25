@@ -33,6 +33,19 @@ acknowledge your responsible disclosure, if you wish.
 
 ## History
 
+> url-parse mishandles certain use a single of (back) slash such as https:\ &
+> https:/ and > interprets the URI as a relative path. Browsers accept a single
+> backslash after the protocol, and treat it as a normal slash, while url-parse
+> sees it as a relative path.
+
+- **Reporter credits**
+  - Ready-Research
+  - GitHub: [@Ready-Reserach](https://github.com/ready-research)
+- Huntr report: https://www.huntr.dev/bounties/1625557993985-unshiftio/url-parse/
+- Fixed in: 1.5.2
+
+---
+
 > Using backslash in the protocol is valid in the browser, while url-parse
 > thinks it’s a relative path. An application that validates a url using
 > url-parse might pass a malicious link.
@@ -41,6 +54,8 @@ acknowledge your responsible disclosure, if you wish.
   - CxSCA AppSec team at Checkmarx.
   - Twitter: [Yaniv Nizry](https://twitter.com/ynizry)
 - Fixed in: 1.5.0
+
+---
 
 > The `extractProtocol` method does not return the correct protocol when
 > provided with unsanitized content which could lead to false positives.
