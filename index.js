@@ -458,7 +458,11 @@ function set(part, value, fn) {
         url[part] = value;
       }
       break;
-
+    case 'origin':
+      let origin_url = new Url(value);
+      url.protocol = origin_url.protocol;
+      url.host = origin_url.host;
+      break;
     default:
       url[part] = value;
   }

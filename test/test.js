@@ -1083,6 +1083,12 @@ describe('url-parse', function () {
       assume(data.protocol).equals('file:');
       assume(data.origin).equals('null');
     });
+
+    it('update origin when updating origin',function(){
+      const url = new parse("http://www.example.com/foo/bar");
+      url.set('origin', 'https://anotherorigin.com');
+      assume(url.origin).equals('https://anotherorigin.com');
+    })
   });
 
   describe('fuzzy', function () {
