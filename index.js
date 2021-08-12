@@ -460,13 +460,10 @@ function set(part, value, fn) {
       break;
 
     case 'auth':
-      var instruction = [];
-      if (value) {
-        instruction = value.split(':');
-      }
+      var splits = value.split(':');
+      url.username = splits[0];
+      url.password = splits.length === 2 ? splits[1] : '';
       url[part] = value;
-      url.username = instruction[0] || '';
-      url.password = instruction[1] || '';
       break;
 
     default:
