@@ -459,6 +459,16 @@ function set(part, value, fn) {
       }
       break;
 
+    case 'auth':
+      var instruction = [];
+      if (value) {
+        instruction = value.split(':');
+      }
+      url[part] = value;
+      url.username = instruction[0] || '';
+      url.password = instruction[1] || '';
+      break;
+
     default:
       url[part] = value;
   }
