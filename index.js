@@ -459,6 +459,13 @@ function set(part, value, fn) {
       }
       break;
 
+    case 'auth':
+      var splits = value.split(':');
+      url.username = splits[0];
+      url.password = splits.length === 2 ? splits[1] : '';
+      url[part] = value;
+      break;
+
     default:
       url[part] = value;
   }
