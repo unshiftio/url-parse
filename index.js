@@ -509,6 +509,9 @@ function toString(stringify) {
     result += url.username;
     if (url.password) result += ':'+ url.password;
     result += '@';
+  } else if (url.password) {
+    result += ':'+ url.password;
+    result += '@';
   }
 
   result += url.host + url.pathname;
