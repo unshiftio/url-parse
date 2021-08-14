@@ -1046,6 +1046,30 @@ describe('url-parse', function () {
       assume(data.href).equals('mailto:alice@atlanta.com');
     });
 
+    it('updates username and password when updating auth', function() {
+      var data = parse('https://example.com');
+
+      assume(data.set('auth', 'foo:bar')).equals(data);
+      assume(data.username).equals('foo');
+      assume(data.password).equals('bar');
+      assume(data.href).equals('https://foo:bar@example.com/');
+
+      assume(data.set('auth', 'baz:')).equals(data);
+      assume(data.username).equals('baz');
+      assume(data.password).equals('');
+      assume(data.href).equals('https://baz@example.com/');
+
+      assume(data.set('auth', 'qux')).equals(data);
+      assume(data.username).equals('qux');
+      assume(data.password).equals('');
+      assume(data.href).equals('https://qux@example.com/');
+
+      assume(data.set('auth', ':quux')).equals(data);
+      assume(data.username).equals('');
+      assume(data.password).equals('quux');
+      assume(data.href).equals('https://:quux@example.com/');
+    });
+
     it('updates other values', function () {
       var data = parse('http://google.com/?foo=bar');
 
