@@ -494,7 +494,9 @@ function toString(stringify) {
 
   if (protocol && protocol.charAt(protocol.length - 1) !== ':') protocol += ':';
 
-  var result = protocol + (url.slashes || isSpecial(url.protocol) ? '//' : '');
+  var result =
+    protocol +
+    ((url.protocol && url.slashes) || isSpecial(url.protocol) ? '//' : '');
 
   if (url.username) {
     result += url.username;

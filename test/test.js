@@ -401,6 +401,13 @@ describe('url-parse', function () {
     assume(parsed.slashes).is.true();
   });
 
+  it('does not readd slashes to href if there is no protocol', function() {
+    var parsed = parse('//example.com', {});
+
+    assume(parsed.pathname).equals('//example.com');
+    assume(parsed.href).equals('//example.com');
+  });
+
   describe('origin', function () {
     it('generates an origin property', function () {
       var url = 'http://google.com:80/pathname'
