@@ -468,7 +468,6 @@ function set(part, value, fn) {
       var splits = value.split(':');
       url.username = splits[0];
       url.password = splits.length === 2 ? splits[1] : '';
-      url[part] = value;
   }
 
   for (var i = 0; i < rules.length; i++) {
