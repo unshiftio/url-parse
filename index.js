@@ -372,7 +372,7 @@ function Url(address, location, parser) {
   url.username = url.password = '';
   if (url.auth) {
     instruction = url.auth.split(':');
-    url.username = instruction[0] || '';
+    url.username = instruction[0];
     url.password = instruction[1] || '';
   }
 
