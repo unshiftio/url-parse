@@ -459,14 +459,15 @@ function set(part, value, fn) {
       }
       break;
 
+    case 'username':
+    case 'password':
+      url[part] = encodeURIComponent(value);
+      break;
+
     case 'auth':
       var splits = value.split(':');
       url.username = splits[0];
       url.password = splits.length === 2 ? splits[1] : '';
-      url[part] = value;
-      break;
-
-    default:
       url[part] = value;
   }
 
@@ -475,6 +476,8 @@ function set(part, value, fn) {
 
     if (ins[4]) url[ins[1]] = url[ins[1]].toLowerCase();
   }
+
+  url.auth = url.password ? url.username +':'+ url.password : url.username;
 
   url.origin = url.protocol !== 'file:' && isSpecial(url.protocol) && url.host
     ? url.protocol +'//'+ url.host

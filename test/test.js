@@ -1046,6 +1046,62 @@ describe('url-parse', function () {
       assume(data.href).equals('mailto:alice@atlanta.com');
     });
 
+    it('updates auth when updating username', function() {
+      var data = parse('https://example.com');
+
+      assume(data.set('username', 'foo')).equals(data);
+      assume(data.username).equals('foo');
+      assume(data.auth).equals('foo')
+      assume(data.href).equals('https://foo@example.com/');
+
+      data.set('username', '');
+
+      assume(data.username).equals('');
+      assume(data.auth).equals('')
+      assume(data.href).equals('https://example.com/');
+
+      data.set('username', 'foo:');
+
+      assume(data.username).equals('foo%3A');
+      assume(data.auth).equals('foo%3A')
+      assume(data.href).equals('https://foo%3A@example.com/');
+
+      data = parse('https://foo:bar@example.com')
+      data.set('username', 'baz');
+
+      assume(data.username).equals('baz');
+      assume(data.auth).equals('baz:bar')
+      assume(data.href).equals('https://baz:bar@example.com/');
+    });
+
+    it('updates auth when updating password', function() {
+      var data = parse('https://example.com');
+
+      assume(data.set('password', 'foo')).equals(data);
+      assume(data.password).equals('foo');
+      assume(data.auth).equals(':foo')
+      assume(data.href).equals('https://:foo@example.com/');
+
+      data.set('password', '');
+
+      assume(data.password).equals('');
+      assume(data.auth).equals('')
+      assume(data.href).equals('https://example.com/');
+
+      data.set('password', ':foo@');
+
+      assume(data.password).equals('%3Afoo%40');
+      assume(data.auth).equals(':%3Afoo%40')
+      assume(data.href).equals('https://:%3Afoo%40@example.com/');
+
+      data = parse('https://foo:bar@example.com')
+      data.set('password', 'baz');
+
+      assume(data.password).equals('baz');
+      assume(data.auth).equals('foo:baz')
+      assume(data.href).equals('https://foo:baz@example.com/');
+    });
+
     it('updates username and password when updating auth', function() {
       var data = parse('https://example.com');
 
