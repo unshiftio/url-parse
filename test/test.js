@@ -689,6 +689,54 @@ describe('url-parse', function () {
       assume(parsed.hostname).equals('www.example.com');
       assume(parsed.href).equals(url);
     });
+
+    it('handles @ in username', function () {
+      var url = 'http://user@@www.example.com/'
+        , parsed = parse(url);
+
+      assume(parsed.protocol).equals('http:');
+      assume(parsed.auth).equals('user%40');
+      assume(parsed.username).equals('user%40');
+      assume(parsed.password).equals('');
+      assume(parsed.hostname).equals('www.example.com');
+      assume(parsed.pathname).equals('/');
+      assume(parsed.href).equals('http://user%40@www.example.com/');
+
+      url = 'http://user%40@www.example.com/';
+      parsed = parse(url);
+
+      assume(parsed.protocol).equals('http:');
+      assume(parsed.auth).equals('user%40');
+      assume(parsed.username).equals('user%40');
+      assume(parsed.password).equals('');
+      assume(parsed.hostname).equals('www.example.com');
+      assume(parsed.pathname).equals('/');
+      assume(parsed.href).equals('http://user%40@www.example.com/');
+    });
+
+    it('handles @ in password', function () {
+      var url = 'http://user@:pas:s@@www.example.com/'
+        , parsed = parse(url);
+
+      assume(parsed.protocol).equals('http:');
+      assume(parsed.auth).equals('user%40:pas%3As%40');
+      assume(parsed.username).equals('user%40');
+      assume(parsed.password).equals('pas%3As%40');
+      assume(parsed.hostname).equals('www.example.com');
+      assume(parsed.pathname).equals('/');
+      assume(parsed.href).equals('http://user%40:pas%3As%40@www.example.com/');
+
+      url = 'http://user%40:pas%3As%40@www.example.com/'
+      parsed = parse(url);
+
+      assume(parsed.protocol).equals('http:');
+      assume(parsed.auth).equals('user%40:pas%3As%40');
+      assume(parsed.username).equals('user%40');
+      assume(parsed.password).equals('pas%3As%40');
+      assume(parsed.hostname).equals('www.example.com');
+      assume(parsed.pathname).equals('/');
+      assume(parsed.href).equals('http://user%40:pas%3As%40@www.example.com/');
+    });
   });
 
   it('accepts multiple ???', function () {
@@ -1124,6 +1172,26 @@ describe('url-parse', function () {
       assume(data.username).equals('');
       assume(data.password).equals('quux');
       assume(data.href).equals('https://:quux@example.com/');
+
+      assume(data.set('auth', 'user@:pass@')).equals(data);
+      assume(data.username).equals('user%40');
+      assume(data.password).equals('pass%40');
+      assume(data.href).equals('https://user%40:pass%40@example.com/');
+
+      assume(data.set('auth', 'user%40:pass%40')).equals(data);
+      assume(data.username).equals('user%40');
+      assume(data.password).equals('pass%40');
+      assume(data.href).equals('https://user%40:pass%40@example.com/');
+
+      assume(data.set('auth', 'user:pass:word')).equals(data);
+      assume(data.username).equals('user');
+      assume(data.password).equals('pass%3Aword');
+      assume(data.href).equals('https://user:pass%3Aword@example.com/');
+
+      assume(data.set('auth', 'user:pass%3Aword')).equals(data);
+      assume(data.username).equals('user');
+      assume(data.password).equals('pass%3Aword');
+      assume(data.href).equals('https://user:pass%3Aword@example.com/');
     });
 
     it('updates other values', function () {
