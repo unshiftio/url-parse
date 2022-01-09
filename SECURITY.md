@@ -33,8 +33,8 @@ acknowledge your responsible disclosure, if you wish.
 
 ## History
 
-> url-parse mishandles certain use a single of (back) slash such as https:\ &
-> https:/ and > interprets the URI as a relative path. Browsers accept a single
+> url-parse mishandles certain uses of a single (back) slash such as https:\ &
+> https:/ and interprets the URI as a relative path. Browsers accept a single
 > backslash after the protocol, and treat it as a normal slash, while url-parse
 > sees it as a relative path.
 
