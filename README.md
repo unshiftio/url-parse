@@ -80,8 +80,8 @@ The returned `url` instance contains the following properties:
 - `auth`: Authentication information portion (e.g. `username:password`).
 - `username`: Username of basic authentication.
 - `password`: Password of basic authentication.
-- `host`: Host name with port number.
-- `hostname`: Host name without port number.
+- `host`: Host name with port number. The hostname might be invalid.
+- `hostname`: Host name without port number. This might be an invalid hostname.
 - `port`: Optional port number.
 - `pathname`: URL path.
 - `query`: Parsed object containing query string, unless parsing is set to false.
