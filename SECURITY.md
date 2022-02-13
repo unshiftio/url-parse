@@ -33,6 +33,14 @@ acknowledge your responsible disclosure, if you wish.
 
 ## History
 
+> Incorrect handling of username and password can lead to authorization bypass.
+
+- **Reporter credits**
+  - ranjit-git
+  - GitHub: [@ranjit-git](https://github.com/ranjit-git)
+- Huntr report: https://www.huntr.dev/bounties/6d1bc51f-1876-4f5b-a2c2-734e09e8e05b/
+- Fixed in: 1.5.6
+
 > url-parse mishandles certain uses of a single (back) slash such as https:\ &
 > https:/ and interprets the URI as a relative path. Browsers accept a single
 > backslash after the protocol, and treat it as a normal slash, while url-parse
