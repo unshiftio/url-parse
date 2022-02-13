@@ -2,6 +2,7 @@
 
 var required = require('requires-port')
   , qs = require('querystringify')
+  , CRHTLF = /[\n\r\t]/g
   , slashes = /^[A-Za-z][A-Za-z0-9+-.]*:\/\//
   , protocolre = /^([a-z][a-z0-9.+-]*:)?(\/\/)?([\\/]+)?([\S\s]*)/i
   , windowsDriveLetter = /^[a-zA-Z]:/
@@ -135,6 +136,7 @@ function isSpecial(scheme) {
  */
 function extractProtocol(address, location) {
   address = trimLeft(address);
+  address = address.replace(CRHTLF, '');
   location = location || {};
 
   var match = protocolre.exec(address);
@@ -235,6 +237,7 @@ function resolve(relative, base) {
  */
 function Url(address, location, parser) {
   address = trimLeft(address);
+  address = address.replace(CRHTLF, '');
 
   if (!(this instanceof Url)) {
     return new Url(address, location, parser);

@@ -102,7 +102,7 @@ describe('url-parse', function () {
     });
 
     it('does not truncate the input string', function () {
-      var input = 'foo\nbar\rbaz\u2028qux\u2029';
+      var input = 'foo\x0bbar\x0cbaz\u2028qux\u2029';
 
       assume(parse.extractProtocol(input)).eql({
         slashes: false,
@@ -113,7 +113,16 @@ describe('url-parse', function () {
     });
 
     it('trimsLeft', function () {
-      assume(parse.extractProtocol(' javascript://foo')).eql({
+      assume(parse.extractProtocol('\x0b\x0c javascript://foo')).eql({
+        slashes: true,
+        protocol: 'javascript:',
+        rest: 'foo',
+        slashesCount: 2
+      });
+    });
+
+    it('removes CR, HT, and LF', function () {
+      assume(parse.extractProtocol('jav\n\rasc\nript\r:/\t/fo\no')).eql({
         slashes: true,
         protocol: 'javascript:',
         rest: 'foo',
@@ -406,6 +415,31 @@ describe('url-parse', function () {
 
     assume(parsed.pathname).equals('//example.com');
     assume(parsed.href).equals('//example.com');
+  });
+
+  it('removes CR, HT, and LF', function () {
+    var parsed = parse(
+      'ht\ntp://a\rb:\tcd@exam\rple.com:80\t80/pat\thname?fo\no=b\rar#ba\tz'
+    );
+
+    assume(parsed.protocol).equals('http:');
+    assume(parsed.username).equals('ab');
+    assume(parsed.password).equals('cd');
+    assume(parsed.host).equals('example.com:8080');
+    assume(parsed.hostname).equals('example.com');
+    assume(parsed.port).equals('8080');
+    assume(parsed.pathname).equals('/pathname');
+    assume(parsed.query).equals('?foo=bar');
+    assume(parsed.hash).equals('#baz');
+    assume(parsed.href).equals(
+      'http://ab:cd@example.com:8080/pathname?foo=bar#baz'
+    );
+
+    parsed = parse('s\nip:al\rice@atl\tanta.com');
+
+    assume(parsed.protocol).equals('sip:');
+    assume(parsed.pathname).equals('alice@atlanta.com');
+    assume(parsed.href).equals('sip:alice@atlanta.com');
   });
 
   describe('origin', function () {
