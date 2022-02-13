@@ -306,7 +306,11 @@ function Url(address, location, parser) {
     if (parse !== parse) {
       url[key] = address;
     } else if ('string' === typeof parse) {
-      if (~(index = address.indexOf(parse))) {
+      index = parse === '@'
+        ? address.lastIndexOf(parse)
+        : address.indexOf(parse);
+
+      if (~index) {
         if ('number' === typeof instruction[2]) {
           url[key] = address.slice(0, index);
           address = address.slice(index + instruction[2]);
@@ -372,10 +376,21 @@ function Url(address, location, parser) {
   // Parse down the `auth` for the username and password.
   //
   url.username = url.password = '';
+
   if (url.auth) {
-    instruction = url.auth.split(':');
-    url.username = instruction[0];
-    url.password = instruction[1] || '';
+    index = url.auth.indexOf(':');
+
+    if (~index) {
+      url.username = url.auth.slice(0, index);
+      url.username = encodeURIComponent(decodeURIComponent(url.username));
+
+      url.password = url.auth.slice(index + 1);
+      url.password = encodeURIComponent(decodeURIComponent(url.password))
+    } else {
+      url.username = encodeURIComponent(decodeURIComponent(url.auth));
+    }
+
+    url.auth = url.password ? url.username +':'+ url.password : url.username;
   }
 
   url.origin = url.protocol !== 'file:' && isSpecial(url.protocol) && url.host
@@ -467,9 +482,17 @@ function set(part, value, fn) {
       break;
 
     case 'auth':
-      var splits = value.split(':');
-      url.username = splits[0];
-      url.password = splits.length === 2 ? splits[1] : '';
+      var index = value.indexOf(':');
+
+      if (~index) {
+        url.username = value.slice(0, index);
+        url.username = encodeURIComponent(decodeURIComponent(url.username));
+
+        url.password = value.slice(index + 1);
+        url.password = encodeURIComponent(decodeURIComponent(url.password));
+      } else {
+        url.username = encodeURIComponent(decodeURIComponent(value));
+      }
   }
 
   for (var i = 0; i < rules.length; i++) {
