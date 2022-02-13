@@ -41,14 +41,16 @@ acknowledge your responsible disclosure, if you wish.
 - Huntr report: https://www.huntr.dev/bounties/6d1bc51f-1876-4f5b-a2c2-734e09e8e05b/
 - Fixed in: 1.5.6
 
+---
+
 > url-parse mishandles certain uses of a single (back) slash such as https:\ &
 > https:/ and interprets the URI as a relative path. Browsers accept a single
 > backslash after the protocol, and treat it as a normal slash, while url-parse
 > sees it as a relative path.
 
 - **Reporter credits**
-  - Ready-Research
-  - GitHub: [@Ready-Reserach](https://github.com/ready-research)
+  - ready-research
+  - GitHub: [@ready-research](https://github.com/ready-research)
 - Huntr report: https://www.huntr.dev/bounties/1625557993985-unshiftio/url-parse/
 - Fixed in: 1.5.2
 
