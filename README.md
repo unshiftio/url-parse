@@ -4,6 +4,12 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/url-parse.svg)](https://saucelabs.com/u/url-parse)
 
+**`url-parse` was created in 2014 when the WHATWG URL API was not available in
+Node.js and the `URL` interface was supported only in some browsers. Today this
+is no longer true. The `URL` interface is available in all supported Node.js
+release lines and basically all browsers. Consider using it for better security
+and accuracy.**
+
 The `url-parse` method exposes two different API interfaces. The
 [`url`](https://nodejs.org/api/url.html) interface that you know from Node.js
 and the new [`URL`](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL)
