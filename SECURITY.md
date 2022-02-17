@@ -33,6 +33,18 @@ acknowledge your responsible disclosure, if you wish.
 
 ## History
 
+> A specially crafted URL with empty userinfo and no host can be used to bypass
+> authorization checks.
+
+- **Reporter credits**
+  - Haxatron
+  - GitHub: [@haxatron](https://github.com/haxatron)
+  - Twitter: [@haxatron1](https://twitter.com/haxatron1)
+- Huntr report: https://www.huntr.dev/bounties/83a6bc9a-b542-4a38-82cd-d995a1481155/
+- Fixed in: 1.5.7
+
+---
+
 > Incorrect handling of username and password can lead to authorization bypass.
 
 - **Reporter credits**
