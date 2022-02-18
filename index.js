@@ -39,7 +39,7 @@ var rules = [
   ['/', 'pathname'],                    // Extract from the back.
   ['@', 'auth', 1],                     // Extract from the front.
   [NaN, 'host', undefined, 1, 1],       // Set left over value.
-  [/:(\d+)$/, 'port', undefined, 1],    // RegExp the back.
+  [/:(\d*)$/, 'port', undefined, 1],    // RegExp the back.
   [NaN, 'hostname', undefined, 1, 1]    // Set left over.
 ];
 
@@ -524,6 +524,7 @@ function toString(stringify) {
 
   var query
     , url = this
+    , host = url.host
     , protocol = url.protocol;
 
   if (protocol && protocol.charAt(protocol.length - 1) !== ':') protocol += ':';
@@ -542,7 +543,7 @@ function toString(stringify) {
   } else if (
     url.protocol !== 'file:' &&
     isSpecial(url.protocol) &&
-    !url.host &&
+    !host &&
     url.pathname !== '/'
   ) {
     //
@@ -552,7 +553,13 @@ function toString(stringify) {
     result += '@';
   }
 
-  result += url.host + url.pathname;
+  //
+  // Trailing colon is removed from `url.host` when it is parsed. If it still
+  // ends with a colon, then add back the trailing colon that was removed. This
+  // prevents an invalid URL from being transformed into a valid one.
+  //
+  if (host[host.length - 1] === ':') host += ':';
+  result += host + url.pathname;
 
   query = 'object' === typeof url.query ? stringify(url.query) : url.query;
   if (query) result += '?' !== query.charAt(0) ? '?'+ query : query;

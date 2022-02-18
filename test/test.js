@@ -442,6 +442,28 @@ describe('url-parse', function () {
     assume(parsed.href).equals('sip:alice@atlanta.com');
   });
 
+  it('handles the case where the port is specified but empty', function () {
+    var parsed = parse('http://example.com:');
+
+    assume(parsed.protocol).equals('http:');
+    assume(parsed.port).equals('');
+    assume(parsed.host).equals('example.com');
+    assume(parsed.hostname).equals('example.com');
+    assume(parsed.pathname).equals('/');
+    assume(parsed.origin).equals('http://example.com');
+    assume(parsed.href).equals('http://example.com/');
+
+    parsed = parse('http://example.com::');
+
+    assume(parsed.protocol).equals('http:');
+    assume(parsed.port).equals('');
+    assume(parsed.host).equals('example.com:');
+    assume(parsed.hostname).equals('example.com:');
+    assume(parsed.pathname).equals('/');
+    assume(parsed.origin).equals('http://example.com:');
+    assume(parsed.href).equals('http://example.com::/');
+  });
+
   describe('origin', function () {
     it('generates an origin property', function () {
       var url = 'http://google.com:80/pathname'
