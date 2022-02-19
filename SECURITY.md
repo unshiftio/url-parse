@@ -33,6 +33,17 @@ acknowledge your responsible disclosure, if you wish.
 
 ## History
 
+> A URL with a specified but empty port can be used to bypass authorization
+> checks.
+
+- **Reporter credits**
+  - Rohan Sharma
+  - GitHub: [@r0hansh](https://github.com/r0hansh)
+- Huntr report: https://www.huntr.dev/bounties/55fd06cd-9054-4d80-83be-eb5a454be78c/
+- Fixed in: 1.5.8
+
+---
+
 > A specially crafted URL with empty userinfo and no host can be used to bypass
 > authorization checks.
 
