@@ -2,11 +2,11 @@
 
 var required = require('requires-port')
   , qs = require('querystringify')
+  , controlOrWhitespace = /^[\x00-\x20\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+/
   , CRHTLF = /[\n\r\t]/g
   , slashes = /^[A-Za-z][A-Za-z0-9+-.]*:\/\//
   , protocolre = /^([a-z][a-z0-9.+-]*:)?(\/\/)?([\\/]+)?([\S\s]*)/i
-  , windowsDriveLetter = /^[a-zA-Z]:/
-  , whitespace = /^[\x00-\x20\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+/;
+  , windowsDriveLetter = /^[a-zA-Z]:/;
 
 /**
  * Trim a given string.
@@ -15,7 +15,7 @@ var required = require('requires-port')
  * @public
  */
 function trimLeft(str) {
-  return (str ? str : '').toString().replace(whitespace, '');
+  return (str ? str : '').toString().replace(controlOrWhitespace, '');
 }
 
 /**
