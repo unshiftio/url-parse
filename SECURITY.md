@@ -33,6 +33,18 @@ acknowledge your responsible disclosure, if you wish.
 
 ## History
 
+> Leading control characters are not removed. This allows an attacker to bypass
+> hostname checks and makes the `extractProtocol` method return false positives.
+
+- **Reporter credits**
+  - Haxatron
+  - GitHub: [@haxatron](https://github.com/haxatron)
+  - Twitter: [@haxatron1](https://twitter.com/haxatron1)
+- Huntr report: https://www.huntr.dev/bounties/57124ed5-4b68-4934-8325-2c546257f2e4/
+- Fixed in: 1.5.9
+
+---
+
 > A URL with a specified but empty port can be used to bypass authorization
 > checks.
 
