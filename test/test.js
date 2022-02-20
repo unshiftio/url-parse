@@ -47,8 +47,14 @@ describe('url-parse', function () {
       assume(parse.trimLeft).is.a('function');
     });
 
-    it('removes whitespace on the left', function () {
-      assume(parse.trimLeft('  lol')).equals('lol');
+    it('removes control characters on the left', function () {
+      var i = 0;
+      var prefix = ''
+
+      for (; i < 33; i++) {
+        prefix = String.fromCharCode(i);
+        assume(parse.trimLeft(prefix + prefix +'lol')).equals('lol');
+      }
     });
 
     it('calls toString on a given value', function () {
