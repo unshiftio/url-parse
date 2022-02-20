@@ -9,9 +9,11 @@ var required = require('requires-port')
   , windowsDriveLetter = /^[a-zA-Z]:/;
 
 /**
- * Trim a given string.
+ * Remove control characters and whitespace from the beginning of a string.
  *
- * @param {String} str String to trim.
+ * @param {Object|String} str String to trim.
+ * @returns {String} A new string representing `str` stripped of control
+ *     characters and whitespace from its beginning.
  * @public
  */
 function trimLeft(str) {
