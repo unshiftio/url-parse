@@ -5,6 +5,7 @@ var required = require('requires-port')
   , controlOrWhitespace = /^[\x00-\x20\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+/
   , CRHTLF = /[\n\r\t]/g
   , slashes = /^[A-Za-z][A-Za-z0-9+-.]*:\/\//
+  , port = /:\d+$/
   , protocolre = /^([a-z][a-z0-9.+-]*:)?(\/\/)?([\\/]+)?([\S\s]*)/i
   , windowsDriveLetter = /^[a-zA-Z]:/;
 
@@ -452,7 +453,7 @@ function set(part, value, fn) {
     case 'host':
       url[part] = value;
 
-      if (/:\d+$/.test(value)) {
+      if (port.test(value)) {
         value = value.split(':');
         url.port = value.pop();
         url.hostname = value.join(':');
@@ -560,7 +561,10 @@ function toString(stringify) {
   // ends with a colon, then add back the trailing colon that was removed. This
   // prevents an invalid URL from being transformed into a valid one.
   //
-  if (host[host.length - 1] === ':') host += ':';
+  if (host[host.length - 1] === ':' || (port.test(url.hostname) && !url.port)) {
+    host += ':';
+  }
+
   result += host + url.pathname;
 
   query = 'object' === typeof url.query ? stringify(url.query) : url.query;

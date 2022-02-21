@@ -468,6 +468,26 @@ describe('url-parse', function () {
     assume(parsed.pathname).equals('/');
     assume(parsed.origin).equals('http://example.com:');
     assume(parsed.href).equals('http://example.com::/');
+
+    parsed = parse('http://example.com:8080:');
+
+    assume(parsed.protocol).equals('http:');
+    assume(parsed.port).equals('');
+    assume(parsed.host).equals('example.com:8080');
+    assume(parsed.hostname).equals('example.com:8080');
+    assume(parsed.pathname).equals('/');
+    assume(parsed.origin).equals('http://example.com:8080');
+    assume(parsed.href).equals('http://example.com:8080:/');
+
+    parsed = parse('http://example.com:8000:8080');
+
+    assume(parsed.protocol).equals('http:');
+    assume(parsed.port).equals('8080');
+    assume(parsed.host).equals('example.com:8000:8080');
+    assume(parsed.hostname).equals('example.com:8000');
+    assume(parsed.pathname).equals('/');
+    assume(parsed.origin).equals('http://example.com:8000:8080');
+    assume(parsed.href).equals('http://example.com:8000:8080/');
   });
 
   describe('origin', function () {
