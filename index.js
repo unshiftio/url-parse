@@ -238,9 +238,6 @@ function resolve(relative, base) {
  * @private
  */
 function Url(address, location, parser) {
-  address = trimLeft(address);
-  address = address.replace(CRHTLF, '');
-
   if (!(this instanceof Url)) {
     return new Url(address, location, parser);
   }
