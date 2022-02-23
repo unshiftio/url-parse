@@ -22,6 +22,34 @@ function trimLeft(str) {
 }
 
 /**
+ * Remove control characters and whitespace from both ends of a string.
+ *
+ * @param {Object|String} str String to trim.
+ * @returns {String} A new string representing `str` stripped of control
+ *     characters and whitespace from both its beginning and end.
+ * @private
+ */
+function trim(str) {
+  var trimmed = trimLeft(str);
+  var i = trimmed.length;
+
+  if (i === 0) return trimmed;
+
+  //
+  // A regex is not used here because `/[\x00-\x20]+$/` is vulnerable to ReDoS.
+  //
+  while (i) {
+    if (trimmed.charCodeAt(i - 1) > 0x20) {
+      break;
+    } else {
+      i = i - 1;
+    }
+  }
+
+  return trimmed.slice(0, i);
+}
+
+/**
  * These are the parse rules for the URL parser, it informs the parser
  * about:
  *
@@ -137,7 +165,7 @@ function isSpecial(scheme) {
  * @private
  */
 function extractProtocol(address, location) {
-  address = trimLeft(address);
+  address = trim(address);
   address = address.replace(CRHTLF, '');
   location = location || {};
 

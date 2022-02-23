@@ -448,6 +448,15 @@ describe('url-parse', function () {
     assume(parsed.href).equals('sip:alice@atlanta.com');
   });
 
+  it('removes trailing control characters', function () {
+    var parsed = parse('http://example.com/a\t\n\f\b\r ');
+
+    assume(parsed.protocol).equals('http:');
+    assume(parsed.host).equals('example.com');
+    assume(parsed.pathname).equals('/a');
+    assume(parsed.href).equals('http://example.com/a');
+  });
+
   it('handles the case where the port is specified but empty', function () {
     var parsed = parse('http://example.com:');
 
