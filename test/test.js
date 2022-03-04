@@ -637,6 +637,8 @@ describe('url-parse', function () {
     it('correctly adds ":" to protocol in final url string', function () {
       var data = parse('google.com/foo', {});
       data.set('protocol', 'https');
+      data.set('hostname', 'google.com');
+      data.set('pathname', '/foo');
       assume(data.href).equals('https://google.com/foo');
 
       data = parse('https://google.com/foo');
@@ -1236,10 +1238,16 @@ describe('url-parse', function () {
       var data = parse('sip:alice@atlanta.com');
 
       assume(data.set('protocol', 'https')).equals(data);
+      assume(data.set('username', 'alice')).equals(data);
+      assume(data.set('hostname', 'atlanta.com')).equals(data);
+      assume(data.set('pathname', '')).equals(data);
 
       assume(data.href).equals('https://alice@atlanta.com');
 
       assume(data.set('protocol', 'mailto', true)).equals(data);
+      assume(data.set('username', '')).equals(data);
+      assume(data.set('hostname', '')).equals(data);
+      assume(data.set('pathname', 'alice@atlanta.com', true)).equals(data);
 
       assume(data.href).equals('mailto:alice@atlanta.com');
     });

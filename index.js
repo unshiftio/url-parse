@@ -440,7 +440,10 @@ function Url(address, location, parser) {
  * @param {Boolean|Function} fn  When setting the query, it will be the function
  *                               used to parse the query.
  *                               When setting the protocol, double slash will be
- *                               removed from the final url if it is true.
+ *                               removed from the final url if it is truthy.
+ *                               When setting the pathname or the hash, a
+ *                               leading / or # will not be automatically added
+ *                               if it is truthy.
  * @returns {URL} URL instance for chaining.
  * @public
  */
@@ -491,12 +494,20 @@ function set(part, value, fn) {
 
     case 'protocol':
       url.protocol = value.toLowerCase();
+
+      if (
+        url.protocol &&
+        url.protocol.charAt(url.protocol.length - 1) !== ':'
+      ) {
+        url.protocol += ':'
+      }
+
       url.slashes = !fn;
       break;
 
     case 'pathname':
     case 'hash':
-      if (value) {
+      if (value && !fn) {
         var char = part === 'pathname' ? '/' : '#';
         url[part] = value.charAt(0) !== char ? char + value : value;
       } else {
@@ -559,7 +570,7 @@ function toString(stringify) {
 
   var result =
     protocol +
-    ((url.protocol && url.slashes) || isSpecial(url.protocol) ? '//' : '');
+    ((protocol && url.slashes) || isSpecial(protocol) ? '//' : '');
 
   if (url.username) {
     result += url.username;
@@ -569,8 +580,8 @@ function toString(stringify) {
     result += ':'+ url.password;
     result += '@';
   } else if (
-    url.protocol !== 'file:' &&
-    isSpecial(url.protocol) &&
+    protocol !== 'file:' &&
+    isSpecial(protocol) &&
     !host &&
     url.pathname !== '/'
   ) {
