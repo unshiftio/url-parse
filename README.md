@@ -1,6 +1,6 @@
 # url-parse
 
-[![Version npm](https://img.shields.io/npm/v/url-parse.svg?style=flat-square)](https://www.npmjs.com/package/url-parse)[![Build Status](https://img.shields.io/github/workflow/status/unshiftio/url-parse/CI/master?label=CI&style=flat-square)](https://github.com/unshiftio/url-parse/actions?query=workflow%3ACI+branch%3Amaster)[![Coverage Status](https://img.shields.io/coveralls/unshiftio/url-parse/master.svg?style=flat-square)](https://coveralls.io/r/unshiftio/url-parse?branch=master)
+[![Version npm](https://img.shields.io/npm/v/url-parse.svg?style=flat-square)](https://www.npmjs.com/package/url-parse)[![CI](https://img.shields.io/github/actions/workflow/status/unshiftio/url-parse/ci.yml?branch=master&label=CI&style=flat-square)](https://github.com/unshiftio/url-parse/actions?query=workflow%3ACI+branch%3Amaster)[![Coverage Status](https://img.shields.io/coveralls/unshiftio/url-parse/master.svg?style=flat-square)](https://coveralls.io/r/unshiftio/url-parse?branch=master)
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/url-parse.svg)](https://saucelabs.com/u/url-parse)
 
