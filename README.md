@@ -2,13 +2,11 @@
 
 [![Version npm](https://img.shields.io/npm/v/url-parse.svg?style=flat-square)](https://www.npmjs.com/package/url-parse)[![CI](https://img.shields.io/github/actions/workflow/status/unshiftio/url-parse/ci.yml?branch=master&label=CI&style=flat-square)](https://github.com/unshiftio/url-parse/actions?query=workflow%3ACI+branch%3Amaster)[![Coverage Status](https://img.shields.io/coveralls/unshiftio/url-parse/master.svg?style=flat-square)](https://coveralls.io/r/unshiftio/url-parse?branch=master)
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/url-parse.svg)](https://saucelabs.com/u/url-parse)
-
-**`url-parse` was created in 2014 when the WHATWG URL API was not available in
+> `url-parse` was created in 2014 when the WHATWG URL API was not available in
 Node.js and the `URL` interface was supported only in some browsers. Today this
 is no longer true. The `URL` interface is available in all supported Node.js
 release lines and basically all browsers. Consider using it for better security
-and accuracy.**
+and accuracy.
 
 The `url-parse` method exposes two different API interfaces. The
 [`url`](https://nodejs.org/api/url.html) interface that you know from Node.js
@@ -31,7 +29,7 @@ In addition to URL parsing we also expose the bundled `querystringify` module.
 ## Installation
 
 This module is designed to be used using either browserify or Node.js it's
-released in the public npm registry and can be installed using:
+released in the public npm registry and can be installed using npm, yarn, or bun:
 
 ```
 npm install url-parse
