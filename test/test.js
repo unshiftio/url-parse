@@ -831,6 +831,23 @@ describe('url-parse', function () {
       assume(parsed.href).equals('http://user%40:pas%3As%40@www.example.com/');
     });
 
+    it('does not throw on malformed percent-encoding in username/password', function () {
+      // decodeURIComponent('%') throws; the fallback keeps the raw value and
+      // re-encodes it, so it round-trips as a literal '%' (i.e. '%25') rather
+      // than propagating the URIError.
+      assume(function () { parse('http://%@example.com/'); }).does.not.throw();
+      assume(parse('http://%@example.com/').username).equals('%25');
+      assume(parse('http://%@example.com/').hostname).equals('example.com');
+
+      assume(function () { parse('http://user:%@example.com/'); }).does.not.throw();
+      assume(parse('http://user:%@example.com/').password).equals('%25');
+
+      assume(function () {
+        parse('http://example.com/').set('auth', '%');
+      }).does.not.throw();
+      assume(parse('http://example.com/').set('auth', '%').username).equals('%25');
+    });
+
     it('adds @ to href if auth and host are empty', function () {
       var parsed, i = 0;
       var urls = [
