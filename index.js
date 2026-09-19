@@ -149,6 +149,24 @@ function isSpecial(scheme) {
 }
 
 /**
+ * Decode a URI component without throwing on malformed percent-encoding.
+ * url-parse is documented as a tolerant parser (see #195), so a stray `%`
+ * in the userinfo must not raise; the WHATWG URL parser tolerates the same
+ * input.
+ *
+ * @param {String} input Value to decode.
+ * @return {String} Decoded value, or the original input if decoding fails.
+ * @private
+ */
+function decode(input) {
+  try {
+    return decodeURIComponent(input);
+  } catch (e) {
+    return input;
+  }
+}
+
+/**
  * @typedef ProtocolExtract
  * @type Object
  * @property {String} protocol Protocol matched in the URL, in lowercase.
@@ -410,12 +428,12 @@ function Url(address, location, parser) {
 
     if (~index) {
       url.username = url.auth.slice(0, index);
-      url.username = encodeURIComponent(decodeURIComponent(url.username));
+      url.username = encodeURIComponent(decode(url.username));
 
       url.password = url.auth.slice(index + 1);
-      url.password = encodeURIComponent(decodeURIComponent(url.password))
+      url.password = encodeURIComponent(decode(url.password))
     } else {
-      url.username = encodeURIComponent(decodeURIComponent(url.auth));
+      url.username = encodeURIComponent(decode(url.auth));
     }
 
     url.auth = url.password ? url.username +':'+ url.password : url.username;
@@ -525,12 +543,12 @@ function set(part, value, fn) {
 
       if (~index) {
         url.username = value.slice(0, index);
-        url.username = encodeURIComponent(decodeURIComponent(url.username));
+        url.username = encodeURIComponent(decode(url.username));
 
         url.password = value.slice(index + 1);
-        url.password = encodeURIComponent(decodeURIComponent(url.password));
+        url.password = encodeURIComponent(decode(url.password));
       } else {
-        url.username = encodeURIComponent(decodeURIComponent(value));
+        url.username = encodeURIComponent(decode(value));
       }
   }
 
