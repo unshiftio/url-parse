@@ -531,6 +531,7 @@ function set(part, value, fn) {
         url.password = encodeURIComponent(decodeURIComponent(url.password));
       } else {
         url.username = encodeURIComponent(decodeURIComponent(value));
+        url.password = '';
       }
   }
 
