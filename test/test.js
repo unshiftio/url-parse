@@ -1352,6 +1352,23 @@ describe('url-parse', function () {
       assume(data.href).equals('https://user:pass%3Aword@example.com/');
     });
 
+    it('clears the previous password when auth has no password', function () {
+      [
+        ['bob', 'bob', 'https://bob@example.com/'],
+        ['', '', 'https://example.com/'],
+        ['user%40name', 'user%40name', 'https://user%40name@example.com/']
+      ].forEach(function (fixture) {
+        var data = parse('https://alice:secret@example.com/', {});
+
+        assume(data.set('auth', fixture[0])).equals(data);
+        assume(data.username).equals(fixture[1]);
+        assume(data.password).equals('');
+        assume(data.auth).equals(fixture[1]);
+        assume(data.href).equals(fixture[2]);
+        assume(data.toString()).equals(fixture[2]);
+      });
+    });
+
     it('updates other values', function () {
       var data = parse('http://google.com/?foo=bar');
 
